@@ -11,3 +11,6 @@ type expression =
 type instruction = Assing of variable * expression | Rem of string
 type line = { number : int; instr : instruction }
 type program = line list
+
+val equal_program : program -> program -> bool
+val pp_program : Format.formatter -> program -> unit
