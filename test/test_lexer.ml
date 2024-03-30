@@ -43,17 +43,16 @@ let test_empty_String_tokenization =
 let test_String_tokenization =
   let open QCheck in
   Test.make ~count:1000
-    ~name:
-      "Forall string x composed of custom string characters, the token `String \
-       x` is generated" (string_gen generator_custom_char) (fun str ->
+    ~name:"Forall string x composed of custom_chars, String c is generated"
+    (list arbitrary_custom_char) (fun char_list ->
+      let str = join_char_list char_list in
       let token_list = generate_token_list ("\"" ^ str ^ "\"") in
       [ String str ] = token_list)
 
 let test_Var_tokenization =
   let open QCheck in
-  Test.make ~count:1000
-    ~name:"Forall x in [A-Z], the token `Var x` is generated" arbitrary_var
-    (fun c -> [ Var c ] = (String.make 1 c |> generate_token_list))
+  Test.make ~count:1000 ~name:"Forall x in [A-Z], Var x is generated"
+    arbitrary_var (fun c -> [ Var c ] = (Char.escaped c |> generate_token_list))
 
 let test_Nat_tokenization =
   let open QCheck in
@@ -175,14 +174,14 @@ let test_numbers_inner_string = test_UnknownToken_string_exception "1 2 3 4"
 
 let () =
   let open Alcotest in
-  run "Lexer_tests"
+  run "Lexer tests"
     [
-      ( "test_tokenization",
+      ( "test tokenization",
         [
-          test_empty_tokenization;
           QCheck_alcotest.to_alcotest test_Nat_tokenization;
-          QCheck_alcotest.to_alcotest test_String_tokenization;
+          test_empty_tokenization;
           test_empty_String_tokenization;
+          QCheck_alcotest.to_alcotest test_String_tokenization;
           QCheck_alcotest.to_alcotest test_Var_tokenization;
           test_Langle_tokenization;
           test_Rangle_tokenization;
