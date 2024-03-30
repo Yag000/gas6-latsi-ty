@@ -1,0 +1,1 @@
+val lexer : Lexing.lexbuf -> Token.token
