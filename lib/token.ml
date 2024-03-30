@@ -1,20 +1,6 @@
-type token =
-  | Nat of int
-  | String of string
-  | Var of char
-  | Langle
-  | Rangle
-  | LangleEqual
-  | RangleEqual
-  | NotEqual
-  | Equal
-  | Plus
-  | Minus
-  | Mult
-  | Div
-  | EOF
+open Parser
 
-let to_string = function
+let token_to_string = function
   | Nat n -> "Nat " ^ string_of_int n
   | String s -> "String " ^ s
   | Var c -> "Var " ^ String.make 1 c
@@ -26,6 +12,10 @@ let to_string = function
   | Equal -> "Equal"
   | Plus -> "Plus"
   | Minus -> "Minus"
-  | Mult -> "Mult"
-  | Div -> "Div"
+  | Times -> "Mult"
+  | Slash -> "Div"
+  | LParen -> "LParen"
+  | RParen -> "RParen"
+  | Rem -> "Rem"
+  | CR -> "CR"
   | EOF -> "EOF"

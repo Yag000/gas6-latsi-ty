@@ -1,10 +1,11 @@
+open Latsi.Parser
 open Latsi.Token
 open Alcotest
 
 let join_char_list (l : char list) =
   List.fold_left (fun acc c -> acc ^ String.make 1 c) "" l
 
-let pp_token ff (token : token) = Format.fprintf ff "%s" (to_string token)
+let pp_token ff (token : token) = Format.fprintf ff "%s" (token_to_string token)
 
 let token_testable =
   testable (Fmt.of_to_string (Format.asprintf "%a" pp_token)) ( = )
@@ -27,7 +28,7 @@ let arbitrary_var =
   let open QCheck in
   make (Gen.char_range 'A' 'Z')
 
-let pp_token ff token = Format.fprintf ff "%s" (to_string token)
+let pp_token ff token = Format.fprintf ff "%s" (token_to_string token)
 
 let pp_list ff (l : 'a list) pp =
   match l with

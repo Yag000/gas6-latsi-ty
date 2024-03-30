@@ -1,5 +1,5 @@
-open Latsi.Token
 open Latsi.Lexer
+open Latsi.Parser
 open Utils
 
 let generate_token_list (str : string) =
@@ -108,10 +108,12 @@ let test_Minus_tokenization =
 let test_Mult_tokenization =
   test_token_lists "test_Mult_tokenization"
     ("*" |> generate_token_list)
-    [ Mult ]
+    [ Times ]
 
 let test_Div_tokenization =
-  test_token_lists "test_Div_tokenization" ("/" |> generate_token_list) [ Div ]
+  test_token_lists "test_Div_tokenization"
+    ("/" |> generate_token_list)
+    [ Slash ]
 
 let test_mix_tokenization =
   test_token_lists "test_mix_tokenization"
@@ -132,8 +134,8 @@ let test_mix_tokenization =
       Plus;
       Rangle;
       Minus;
-      Mult;
-      Div;
+      Times;
+      Slash;
       String ",'abc";
       String "_;de:f";
       String "(GHI).";
@@ -147,8 +149,8 @@ let test_mix_tokenization =
       Plus;
       Rangle;
       Minus;
-      Mult;
-      Div;
+      Times;
+      Slash;
     ]
 
 let test_invalid_number_float =
