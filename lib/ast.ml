@@ -1,4 +1,5 @@
 type variable = char
+
 type unop = Pos | Neg
 
 type binop = Add | Sub | Mul | Div
