@@ -8,7 +8,7 @@ type expression =
   | Var of variable
   | Number of int
 
-type instruction = Assing of variable * expression | Rem of string
+type instruction = Assign of variable * expression | Rem of string
 type line = { number : int; instr : instruction }
 type program = line list
 

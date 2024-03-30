@@ -8,7 +8,7 @@ type expression =
   | Var of variable
   | Number of int
 
-type instruction = Assing of variable * expression | Rem of string
+type instruction = Assign of variable * expression | Rem of string
 type line = { number : int; instr : instruction }
 type program = line list
 
@@ -30,7 +30,7 @@ let rec equal_expression e e' =
 
 let equal_instruction i i' =
   match (i, i') with
-  | Assing (v, e), Assing (v', e') -> v = v' && equal_expression e e'
+  | Assign (v, e), Assign (v', e') -> v = v' && equal_expression e e'
   | Rem s, Rem s' -> s = s'
   | _ -> false
 
@@ -56,7 +56,7 @@ let rec pp_expression fmt = function
   | Number n -> Format.fprintf fmt "%d" n
 
 let pp_instruction fmt = function
-  | Assing (v, e) -> Format.fprintf fmt "%c = %a" v pp_expression e
+  | Assign (v, e) -> Format.fprintf fmt "%c = %a" v pp_expression e
   | Rem s -> Format.fprintf fmt "REM %s" s
 
 let pp_line fmt l = Format.fprintf fmt "%d: %a" l.number pp_instruction l.instr

@@ -38,7 +38,7 @@ line:
     | n=Nat Rem s=String { {number = n; instr = Rem s} }
 
 instr:
-    v=var Equal e=expression {Assing (v,e)}
+    v=var Equal e=expression {Assign (v,e)}
 
 expression:
     x=option(term) Plus y=term {Add (x,y)}
