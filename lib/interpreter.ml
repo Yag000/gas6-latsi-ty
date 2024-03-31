@@ -1,18 +1,24 @@
 open Ast
 
+let eval_binop = function
+  | Add -> ( + )
+  | Sub -> ( - )
+  | Mul -> ( * )
+  | Div -> ( / )
+
 let rec eval_expression env = function
-  | Add (Some e1, e2) -> eval_expression env e1 + eval_expression env e2
-  | Add (None, e2) -> eval_expression env e2
-  | Sub (Some e1, e2) -> eval_expression env e1 - eval_expression env e2
-  | Sub (None, e2) -> -eval_expression env e2
-  | Mul (e1, e2) -> eval_expression env e1 * eval_expression env e2
-  | Div (e1, e2) -> eval_expression env e1 / eval_expression env e2
+  | Binop (op, e1, e2) ->
+      let v1 = eval_expression env e1 in
+      let v2 = eval_expression env e2 in
+      eval_binop op v1 v2
+  | Unop (Neg, e) -> -eval_expression env e
+  | Unop (Pos, e) -> eval_expression env e
   | Number n -> n
   | Var x -> Hashtbl.find env x
 
 let eval_instruction env = function
   | Rem _ -> ()
-  | Assing (x, e) ->
+  | Assign (x, e) ->
       let vx = eval_expression env e in
       Hashtbl.replace env x vx
 
