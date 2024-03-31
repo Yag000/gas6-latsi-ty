@@ -153,6 +153,24 @@ let test_mix_tokenization =
       Slash;
     ]
 
+let test_lparen_tokenization =
+  test_token_lists "test_lparen_tokenization"
+    ("(" |> generate_token_list)
+    [ LParen ]
+
+let test_rparen_tokenization =
+  test_token_lists "test_rparen_tokenization"
+    (")" |> generate_token_list)
+    [ RParen ]
+
+let test_parens_tokenization =
+  test_token_lists "test_parens_tokenization"
+    ("()" |> generate_token_list)
+    [ LParen; RParen ]
+
+let test_cr_tokenization =
+  test_token_lists "test_cr_tokenization" ("\n" |> generate_token_list) [ CR ]
+
 let test_invalid_number_float =
   let open QCheck2 in
   Test.make ~count:1000 ~name:"lexer raises UnknownToken for floats"
@@ -197,6 +215,10 @@ let () =
           test_Mult_tokenization;
           test_Div_tokenization;
           test_mix_tokenization;
+          test_lparen_tokenization;
+          test_rparen_tokenization;
+          test_parens_tokenization;
+          test_cr_tokenization;
         ] );
       ( "test_illegal_tokenization",
         [

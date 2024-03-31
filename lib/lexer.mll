@@ -13,8 +13,8 @@ let white = [' ' '\t']
 rule lexer = parse
         | white { lexer lexbuf }
         | string as s { String(String.sub s 1 (String.length s - 2)) }
-        | var as v { Var(v) }
         | number as n { Nat(int_of_string n) }
+        | var as v { Var(v) }
         | "<=" { LangleEqual }
         | ">=" { RangleEqual }
         | "<>"|"><" { NotEqual }
@@ -25,6 +25,8 @@ rule lexer = parse
         | '-' { Minus }
         | '*' { Times }
         | '/' { Slash }
+        | '(' { LParen }
+        | ')' { RParen }
         | "REM" { Rem }
         | '\n' {CR}
         | eof { EOF }
