@@ -1,5 +1,7 @@
 open Ast
 
+exception Empty_program
+
 module Implementation = struct
   type env = (char, int) Hashtbl.t
 
@@ -28,12 +30,15 @@ module Implementation = struct
   let eval_line env { instr; _ } = eval_instruction env instr
 
   let eval_env program =
-    let env = Hashtbl.create 26 in
-    (* Initialize the environment with 26 variables A-Z *)
-    List.init 26 (fun i -> char_of_int (i + int_of_char 'A'))
-    |> List.iter (fun v -> Hashtbl.add env v 0);
-    List.iter (eval_line env) program;
-    env
+    match program with
+    | [] -> raise Empty_program
+    | _ ->
+        let env = Hashtbl.create 26 in
+        (* Initialize the environment with 26 variables A-Z *)
+        List.init 26 (fun i -> char_of_int (i + int_of_char 'A'))
+        |> List.iter (fun v -> Hashtbl.add env v 0);
+        List.iter (eval_line env) program;
+        env
 
   let value_of var env = Hashtbl.find env var
   let is_correct_value var value env = Hashtbl.find env var = value
