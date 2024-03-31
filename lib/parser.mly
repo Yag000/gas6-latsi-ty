@@ -27,7 +27,6 @@ open Ast
 
 %left Plus Minus
 %left Times Slash
-%nonassoc Equal NotEqual Langle Rangle LangleEqual RangleEqual
 
 
 %%
