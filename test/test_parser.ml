@@ -28,7 +28,13 @@ let () =
   run "Parser"
     [
       ( "Assign",
-        [ instr_test_case "simple integer" "X = 1" (Assign ('X', Number 1)) ] );
+        [
+          instr_test_case "simple integer" "X = 1" (Assign ('X', Number 1));
+          fail_instr_test_case "invalid vairable" "x = 1";
+          fail_instr_test_case "assing a string" "X = \"1\"";
+          instr_test_case "X = Y" "X = Y" (Assign ('X', Var 'Y'));
+          instr_test_case "X = Y" "X = X" (Assign ('X', Var 'X'));
+        ] );
       ( "Unary operations",
         [
           instr_test_case "positive integer alone" "X = +1"
@@ -127,4 +133,17 @@ let () =
           fail_instr_test_case "assign with expression" "REM yes";
           fail_instr_test_case "assign with expression" "REM 1";
         ] );
+      ( "Line",
+        [
+          program_test_case "non CR terminated line" "0 X = 1" None;
+          program_test_case "CR terminated line" "0 X = 1 \n"
+            (Some [ { number = 0; instr = Assign ('X', Number 1) } ]);
+          program_test_case "Nultiple lines" "0 X = 1\n 10 Y = 2\n"
+            (Some
+               [
+                 { number = 0; instr = Assign ('X', Number 1) };
+                 { number = 10; instr = Assign ('Y', Number 2) };
+               ]);
+        ] );
+      ("Program", [ program_test_case "empty program" "" (Some []) ]);
     ]
