@@ -1,5 +1,6 @@
 open Latsi.Parser
 open Latsi.Token
+open Latsi.Ast
 open Alcotest
 
 let join_char_list (l : char list) =
@@ -28,8 +29,6 @@ let arbitrary_var =
   let open QCheck in
   make (Gen.char_range 'A' 'Z')
 
-let pp_token ff token = Format.fprintf ff "%s" (token_to_string token)
-
 let pp_list ff (l : 'a list) pp =
   match l with
   | [] -> Format.fprintf ff "[]"
@@ -39,3 +38,6 @@ let pp_list ff (l : 'a list) pp =
         l
 
 let pp_token_list ff (tl : token list) = pp_list ff tl pp_token
+
+let program_testable =
+  testable (Fmt.of_to_string (Format.asprintf "%a" pp_program)) equal_program

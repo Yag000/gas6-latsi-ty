@@ -1,10 +1,11 @@
 type variable = char
+type unop = Pos | Neg
 
-type expression =
-  | Add of expression option * expression
-  | Sub of expression option * expression
-  | Mul of expression * expression
-  | Div of expression * expression
+type binop = Add | Sub | Mul | Div
+
+and expression =
+  | Binop of binop * expression * expression
+  | Unop of unop * expression
   | Var of variable
   | Number of int
 

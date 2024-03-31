@@ -25,34 +25,37 @@ open Ast
 
 %start<Ast.program> input
 
+%left Plus Minus
+%left Times Slash
+
+
 %%
 
 input: c=program EOF { c }
 
 
 program:
-    l=line* CR { l }
+    l=line* { l }
 
 line:
-    n=Nat i=instr { {number = n; instr = i} }
-    | n=Nat Rem s=String { {number = n; instr = Rem s} }
+    n=Nat i=instr CR { 
+        {number = n; instr = i} }
 
 instr:
-    v=var Equal e=expression {Assign (v,e)}
+    v=var Equal e=expression { Assign (v,e)}
+    | Rem s=String { Rem s }
 
 expression:
-    x=option(term) Plus y=term {Add (x,y)}
-    | x=option(term) Minus y=term {Sub (x,y)}
-
-
-term:
-    x=factor Times y=factor {Mul (x,y)}
-    | x=factor Slash y=factor {Ast.Div (x,y)}
-
-factor:
-    n=Nat {Number n}
-    | v=var {Var v}
+    Plus x=expression { Unop ( Pos, x) }
+    | Minus x=expression { Unop ( Neg, x) }
+    | x=expression Plus y=expression { Binop ( Add, x, y) }
+    | x=expression Minus y=expression { Binop ( Sub, x, y) }
+    | x=expression Times y=expression { Binop ( Mul, x, y) }
+    | x=expression Slash y=expression  { Binop ( Div, x, y) }
     | LParen e=expression RParen {e}
+    | n=Nat {Number n}
+    | v=var {Var v}
+
 
 
 var:

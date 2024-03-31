@@ -1,10 +1,11 @@
 type variable = char
+type unop = Pos | Neg
 
-type expression =
-  | Add of expression option * expression
-  | Sub of expression option * expression
-  | Mul of expression * expression
-  | Div of expression * expression
+type binop = Add | Sub | Mul | Div
+
+and expression =
+  | Binop of binop * expression * expression
+  | Unop of unop * expression
   | Var of variable
   | Number of int
 
@@ -14,16 +15,9 @@ type program = line list
 
 let rec equal_expression e e' =
   match (e, e') with
-  | Add (Some e1, e2), Add (Some e1', e2') ->
-      equal_expression e1 e1' && equal_expression e2 e2'
-  | Add (None, e2), Add (None, e2') -> equal_expression e2 e2'
-  | Sub (Some e1, e2), Sub (Some e1', e2') ->
-      equal_expression e1 e1' && equal_expression e2 e2'
-  | Sub (None, e2), Sub (None, e2') -> equal_expression e2 e2'
-  | Mul (e1, e2), Mul (e1', e2') ->
-      equal_expression e1 e1' && equal_expression e2 e2'
-  | Div (e1, e2), Div (e1', e2') ->
-      equal_expression e1 e1' && equal_expression e2 e2'
+  | Binop (op, e1, e2), Binop (op', e1', e2') ->
+      op = op' && equal_expression e1 e1' && equal_expression e2 e2'
+  | Unop (u, e), Unop (u', e') -> u = u' && equal_expression e e'
   | Var v, Var v' -> v = v'
   | Number n, Number n' -> n = n'
   | _ -> false
@@ -41,19 +35,23 @@ let equal_program p1 p2 =
          l1.number = l2.number && equal_instruction l1.instr l2.instr)
        p1 p2
 
+let pp_unop fmt = function
+  | Pos -> Format.fprintf fmt "+"
+  | Neg -> Format.fprintf fmt "-"
+
+let pp_binop fmt = function
+  | Add -> Format.fprintf fmt "+"
+  | Sub -> Format.fprintf fmt "-"
+  | Mul -> Format.fprintf fmt "*"
+  | Div -> Format.fprintf fmt "/"
+
 let rec pp_expression fmt = function
-  | Add (Some e1, e2) ->
-      Format.fprintf fmt "(%a + %a)" pp_expression e1 pp_expression e2
-  | Add (None, e2) -> Format.fprintf fmt "(%a)" pp_expression e2
-  | Sub (Some e1, e2) ->
-      Format.fprintf fmt "(%a - %a)" pp_expression e1 pp_expression e2
-  | Sub (None, e2) -> Format.fprintf fmt "(-%a)" pp_expression e2
-  | Mul (e1, e2) ->
-      Format.fprintf fmt "(%a * %a)" pp_expression e1 pp_expression e2
-  | Div (e1, e2) ->
-      Format.fprintf fmt "(%a / %a)" pp_expression e1 pp_expression e2
   | Var v -> Format.fprintf fmt "%c" v
   | Number n -> Format.fprintf fmt "%d" n
+  | Unop (u, e) -> Format.fprintf fmt "(%a%a)" pp_unop u pp_expression e
+  | Binop (op, e1, e2) ->
+      Format.fprintf fmt "(%a %a %a)" pp_expression e1 pp_binop op pp_expression
+        e2
 
 let pp_instruction fmt = function
   | Assign (v, e) -> Format.fprintf fmt "%c = %a" v pp_expression e
