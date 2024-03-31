@@ -27,6 +27,7 @@ open Ast
 
 %left Plus Minus
 %left Times Slash
+%nonassoc Equal NotEqual Langle Rangle LangleEqual RangleEqual
 
 
 %%
@@ -52,9 +53,9 @@ expression:
     | x=expression Minus y=expression { Binop ( Sub, x, y) }
     | x=expression Times y=expression { Binop ( Mul, x, y) }
     | x=expression Slash y=expression  { Binop ( Div, x, y) }
-    | LParen e=expression RParen {e}
     | n=Nat {Number n}
     | v=var {Var v}
+    | LParen e=expression RParen {e}
 
 
 
