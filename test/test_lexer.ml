@@ -16,6 +16,22 @@ let test_token_lists (msg : string) (actual : token list)
   Alcotest.test_case msg `Quick (fun () ->
       Alcotest.(check (list token_testable)) "same list" actual expected)
 
+      
+      let test_UnknownToken_exception (str : string) =
+        let open Alcotest in
+        test_case ("Unknown token : " ^ str) `Quick (fun () ->
+          check bool "Unknown token" true (
+            try let _ = generate_token_list str in false with 
+            | UnkownToken _ -> true
+            | _ -> false
+            ))
+
+            let stringizer str = "\"" ^ str ^ "\""
+
+      let test_UnknownToken_string_exception (str : string) =
+        test_UnknownToken_exception (stringizer str)
+
+
 let test_empty_tokenization =
   test_token_lists "test_empty_tokenization" ("" |> generate_token_list) []
 
@@ -133,6 +149,22 @@ let test_mix_tokenization =
       Mult;
       Div;
     ]
+      let test_invalid_number_float =
+        let open QCheck2 in
+        Test.make ~count:1000 ~name:"lexer raises UnknownToken for floats" ~print:string_of_float
+        Gen.float 
+        (fun i ->
+          try (let _ = i |> string_of_float |> generate_token_list in false) with _ -> true
+          )
+
+let test_illegal_inner_string_characters =
+   List.map (fun s -> test_UnknownToken_string_exception s) ["é";"è";"à";"ù"; "&"; "/"; "-"; "|"; "?"; "!"]
+
+let test_illegal_characters =
+   List.map (fun s -> test_UnknownToken_exception s) ["é";"è";"à";"ù"; "&"; "|"; "?"; "!"]
+          
+
+let test_numbers_inner_string = test_UnknownToken_string_exception "1 2 3 4"
 
 let () =
   let open Alcotest in
@@ -158,4 +190,12 @@ let () =
           test_Div_tokenization;
           test_mix_tokenization;
         ] );
+      ( "test_illegal_tokenization",
+        [
+ QCheck_alcotest.to_alcotest test_invalid_number_float;
+test_numbers_inner_string
+ ] @
+ test_illegal_characters @
+ test_illegal_inner_string_characters
+ );
     ]

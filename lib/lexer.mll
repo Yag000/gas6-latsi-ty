@@ -7,7 +7,7 @@ exception UnkownToken of string
 let digit = ['0'-'9']
 let number = digit+
 let var = ['A'-'Z']
-let string = '"'[' ' ',' ''' '_' ';' ':' '(' ')' '.' 'a'-'z''A'-'Z']*'"'
+let string = '"'[' ' ',' ''' '_' ';' ':' '(' ')' '.' 'a'-'z''A'-'Z']*'"' 
 let white = [' ' '\t']
 
 rule lexer = parse
