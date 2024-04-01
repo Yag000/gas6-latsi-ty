@@ -22,20 +22,20 @@ let test_empty_tokenization =
 let test_String_tokenization =
   let open QCheck in
   Test.make ~count:1000
-    ~name:"Forall string x composed of custom_chars, String x is generated"
+    ~name:"Forall string x composed of custom string characters, the token `String x` is generated"
     (string_gen generator_custom_char) (fun str ->
       let token_list = generate_token_list ("\"" ^ str ^ "\"") in
       [ String str ] = token_list)
 
 let test_Var_tokenization =
   let open QCheck in
-  Test.make ~count:1000 ~name:"Forall x in [A-Z], Var x is generated"
+  Test.make ~count:1000 ~name:"Forall x in [A-Z], the token `Var x` is generated"
     arbitrary_var (fun c -> [ Var c ] = (Char.escaped c |> generate_token_list))
 
 let test_Nat_tokenization =
   let open QCheck in
   Test.make ~count:1000
-    ~name:"Forall strictly positive integers x, Nat x is generated" pos_int
+    ~name:"Forall strictly positive integers x, the token `Nat x` is generated" pos_int
     (fun n -> n |> string_of_int |> generate_token_list = [ Nat n ])
 
 let test_Langle_tokenization =
