@@ -8,6 +8,7 @@ tags: ["topics" "TODO" "your" "project"]
 depends: [
   "ocaml"
   "dune" {>= "3.14"}
+  "menhir"
   "alcotest" {with-test}
   "qcheck"
   "qcheck-alcotest"
