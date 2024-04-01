@@ -57,7 +57,15 @@ let pp_instruction ff = function
   | Assign (v, e) -> Format.fprintf ff "%c = %a" v pp_expression e
   | Rem s -> Format.fprintf ff "REM %s" s
 
-let pp_line ff l = Format.fprintf ff "%d: %a" l.number pp_instruction l.instr
+let pp_line ff l = Format.fprintf ff "%d %a" l.number pp_instruction l.instr
 
-let pp_program ff p =
-  List.iter (fun l -> Format.fprintf ff "%a@." pp_line l) p
+let pp_titled_list (title : string) ff (l : 'a list) pp =
+  Format.fprintf ff "%s" title;
+  match l with
+  | [] -> Format.fprintf ff ": []@."
+  | _ ->
+      Format.fprintf ff ": [@.@[<v>%a@]@.]@."
+        Format.(pp_print_list ~pp_sep:(fun out () -> fprintf out "@ ") pp)
+        l
+
+let pp_program ff p = pp_titled_list "Program" ff p pp_line
