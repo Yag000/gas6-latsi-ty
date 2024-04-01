@@ -18,18 +18,16 @@ let generator_custom_char =
     (char_gen_list_from_string " ,'_;:()."
     @ [ Gen.char_range 'a' 'z'; Gen.char_range 'A' 'Z' ])
 
-let pp_custom_char ff c =
-  Format.fprintf ff "%c" c
+let pp_custom_char ff c = Format.fprintf ff "%c" c
 
-let arbitrary_custom_char = QCheck.make ~print:(Format.asprintf "%a" pp_custom_char) generator_custom_char
+let arbitrary_custom_char =
+  QCheck.make ~print:(Format.asprintf "%a" pp_custom_char) generator_custom_char
 
-let arbitrary_var = 
+let arbitrary_var =
   let open QCheck in
-    make (Gen.char_range 'A' 'Z')
+  make (Gen.char_range 'A' 'Z')
 
-
-let pp_token ff token = 
-  Format.fprintf ff "%s" (to_string token)
+let pp_token ff token = Format.fprintf ff "%s" (to_string token)
 
 let pp_list ff (l : 'a list) pp =
   match l with
@@ -39,5 +37,4 @@ let pp_list ff (l : 'a list) pp =
         Format.(pp_print_list ~pp_sep:(fun out () -> fprintf out ";@ ") pp)
         l
 
-let pp_token_list ff (tl : token list) =
-  pp_list ff tl pp_token
+let pp_token_list ff (tl : token list) = pp_list ff tl pp_token

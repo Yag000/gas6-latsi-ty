@@ -2,5 +2,4 @@
  (modules lexer))
 
 (library
- (name latsi)
- )
+ (name latsi))
