@@ -30,10 +30,10 @@ let () =
       ( "Assign",
         [
           instr_test_case "simple integer" "X = 1" (Assign ('X', Number 1));
-          fail_instr_test_case "invalid vairable" "x = 1";
-          fail_instr_test_case "assing a string" "X = \"1\"";
+          fail_instr_test_case "invalid variable" "x = 1";
+          fail_instr_test_case "assigning a string" "X = \"1\"";
           instr_test_case "X = Y" "X = Y" (Assign ('X', Var 'Y'));
-          instr_test_case "X = Y" "X = X" (Assign ('X', Var 'X'));
+          instr_test_case "X = X" "X = X" (Assign ('X', Var 'X'));
         ] );
       ( "Unary operations",
         [
