@@ -35,29 +35,29 @@ let equal_program p1 p2 =
          l1.number = l2.number && equal_instruction l1.instr l2.instr)
        p1 p2
 
-let pp_unop fmt = function
-  | Pos -> Format.fprintf fmt "+"
-  | Neg -> Format.fprintf fmt "-"
+let pp_unop ff = function
+  | Pos -> Format.fprintf ff "+"
+  | Neg -> Format.fprintf ff "-"
 
-let pp_binop fmt = function
-  | Add -> Format.fprintf fmt "+"
-  | Sub -> Format.fprintf fmt "-"
-  | Mul -> Format.fprintf fmt "*"
-  | Div -> Format.fprintf fmt "/"
+let pp_binop ff = function
+  | Add -> Format.fprintf ff "+"
+  | Sub -> Format.fprintf ff "-"
+  | Mul -> Format.fprintf ff "*"
+  | Div -> Format.fprintf ff "/"
 
-let rec pp_expression fmt = function
-  | Var v -> Format.fprintf fmt "%c" v
-  | Number n -> Format.fprintf fmt "%d" n
-  | Unop (u, e) -> Format.fprintf fmt "(%a%a)" pp_unop u pp_expression e
+let rec pp_expression ff = function
+  | Var v -> Format.fprintf ff "%c" v
+  | Number n -> Format.fprintf ff "%d" n
+  | Unop (u, e) -> Format.fprintf ff "(%a%a)" pp_unop u pp_expression e
   | Binop (op, e1, e2) ->
-      Format.fprintf fmt "(%a %a %a)" pp_expression e1 pp_binop op pp_expression
+      Format.fprintf ff "(%a %a %a)" pp_expression e1 pp_binop op pp_expression
         e2
 
-let pp_instruction fmt = function
-  | Assign (v, e) -> Format.fprintf fmt "%c = %a" v pp_expression e
-  | Rem s -> Format.fprintf fmt "REM %s" s
+let pp_instruction ff = function
+  | Assign (v, e) -> Format.fprintf ff "%c = %a" v pp_expression e
+  | Rem s -> Format.fprintf ff "REM %s" s
 
-let pp_line fmt l = Format.fprintf fmt "%d: %a" l.number pp_instruction l.instr
+let pp_line ff l = Format.fprintf ff "%d: %a" l.number pp_instruction l.instr
 
-let pp_program fmt p =
-  List.iter (fun l -> Format.fprintf fmt "%a@." pp_line l) p
+let pp_program ff p =
+  List.iter (fun l -> Format.fprintf ff "%a@." pp_line l) p
