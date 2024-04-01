@@ -148,8 +148,8 @@ let test_parenthesis_unops =
   [
     test_eval "X = 1 + 2" "0 X = 1 + 2\n" [ ('X', 3) ];
     test_eval "X = -(1 + 2)" "0 X = -(1 + 2)\n" [ ('X', -3) ];
-    test_eval "X = -(-1 - 2)" "0 X = -(1 - 2)\n" [ ('X', 1) ];
-    test_eval "X = +(1 + 2)" "0 X = +(-1 + 2)\n" [ ('X', 1) ];
+    test_eval "X = -(1 - 2)" "0 X = -(1 - 2)\n" [ ('X', 1) ];
+    test_eval "X = +(-1 + 2)" "0 X = +(-1 + 2)\n" [ ('X', 1) ];
     test_eval "X = +(-1 + -2)" "0 X = +(-1 + -2)\n" [ ('X', -3) ];
   ]
 

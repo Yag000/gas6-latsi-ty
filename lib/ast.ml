@@ -9,7 +9,10 @@ and expression =
   | Var of variable
   | Number of int
 
-type instruction = Assign of variable * expression | Rem of string (* TODO: Add remaining constructors *)
+type instruction =
+  | Assign of variable * expression
+  | Rem of string (* TODO: Add remaining constructors *)
+
 type line = { number : int; instr : instruction }
 type program = line list
 
