@@ -17,7 +17,7 @@ let test_token_lists (msg : string) (actual : token list)
       Alcotest.(check (list token_testable)) "same list" actual expected)
 
 let test_empty_tokenization =
-  test_token_lists "test_Langle_tokenization" ("" |> generate_token_list) []
+  test_token_lists "test_empty_tokenization" ("" |> generate_token_list) []
 
 let test_String_tokenization =
   let open QCheck in
