@@ -30,7 +30,7 @@ let test_String_tokenization =
 let test_Var_tokenization =
   let open QCheck in
   Test.make ~count:1000 ~name:"Forall x in [A-Z], the token `Var x` is generated"
-    arbitrary_var (fun c -> [ Var c ] = (Char.escaped c |> generate_token_list))
+    arbitrary_var (fun c -> [ Var c ] = (String.make 1 c |> generate_token_list))
 
 let test_Nat_tokenization =
   let open QCheck in
