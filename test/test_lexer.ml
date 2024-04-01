@@ -22,21 +22,23 @@ let test_empty_tokenization =
 let test_String_tokenization =
   let open QCheck in
   Test.make ~count:1000
-    ~name:"Forall string x composed of custom string characters, the token `String x` is generated"
-    (string_gen generator_custom_char) (fun str ->
+    ~name:
+      "Forall string x composed of custom string characters, the token `String \
+       x` is generated" (string_gen generator_custom_char) (fun str ->
       let token_list = generate_token_list ("\"" ^ str ^ "\"") in
       [ String str ] = token_list)
 
 let test_Var_tokenization =
   let open QCheck in
-  Test.make ~count:1000 ~name:"Forall x in [A-Z], the token `Var x` is generated"
-    arbitrary_var (fun c -> [ Var c ] = (String.make 1 c |> generate_token_list))
+  Test.make ~count:1000
+    ~name:"Forall x in [A-Z], the token `Var x` is generated" arbitrary_var
+    (fun c -> [ Var c ] = (String.make 1 c |> generate_token_list))
 
 let test_Nat_tokenization =
   let open QCheck in
   Test.make ~count:1000
-    ~name:"Forall strictly positive integers x, the token `Nat x` is generated" pos_int
-    (fun n -> n |> string_of_int |> generate_token_list = [ Nat n ])
+    ~name:"Forall strictly positive integers x, the token `Nat x` is generated"
+    pos_int (fun n -> n |> string_of_int |> generate_token_list = [ Nat n ])
 
 let test_Langle_tokenization =
   test_token_lists "test_Langle_tokenization"
@@ -91,6 +93,15 @@ let test_Mult_tokenization =
 let test_Div_tokenization =
   test_token_lists "test_Div_tokenization" ("/" |> generate_token_list) [ Div ]
 
+let test_mix_tokenization =
+  test_token_lists "test_mix_tokenization"
+    (
+    ("\",'abc\"\"_;de:f\"\"(GHI).\"123V<=>=<>><<+>-*/")
+    |> generate_token_list)
+    [String ",'abc"; String "_;de:f"; String "(GHI)."; Nat 123; Var 'V';
+               LangleEqual; RangleEqual; NotEqual; NotEqual; Langle; 
+               Plus; Rangle; Minus; Mult; Div]
+
 let () =
   let open Alcotest in
   run "Lexer_tests"
@@ -112,5 +123,6 @@ let () =
           test_Minus_tokenization;
           test_Mult_tokenization;
           test_Div_tokenization;
+          test_mix_tokenization;
         ] );
     ]
