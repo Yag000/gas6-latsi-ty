@@ -19,6 +19,9 @@ let test_token_lists (msg : string) (actual : token list)
 let test_empty_tokenization =
   test_token_lists "test_empty_tokenization" ("" |> generate_token_list) []
 
+let test_empty_String_tokenization =
+  test_token_lists "test_empty_String_tokenization" ("\"\"" |> generate_token_list) [String ""]
+
 let test_String_tokenization =
   let open QCheck in
   Test.make ~count:1000
@@ -140,6 +143,7 @@ let () =
           test_empty_tokenization;
           QCheck_alcotest.to_alcotest test_Nat_tokenization;
           QCheck_alcotest.to_alcotest test_String_tokenization;
+          test_empty_String_tokenization;
           QCheck_alcotest.to_alcotest test_Var_tokenization;
           test_Langle_tokenization;
           test_Rangle_tokenization;
