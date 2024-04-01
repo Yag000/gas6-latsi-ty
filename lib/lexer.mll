@@ -9,7 +9,6 @@ let number = digit+
 let var = ['A'-'Z']
 let string = '"'[' ' ',' ''' '_' ';' ':' '(' ')' '.' 'a'-'z''A'-'Z']*'"'
 let white = [' ' '\t']
-(* TODO: Check escape *)
 
 rule lexer = parse
         | white { lexer lexbuf }
