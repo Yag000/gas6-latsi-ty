@@ -95,12 +95,41 @@ let test_Div_tokenization =
 
 let test_mix_tokenization =
   test_token_lists "test_mix_tokenization"
-    (
-    ("\",'abc\"\"_;de:f\"\"(GHI).\"123V<=>=<>><<+>-*/")
+    ("\",'abc\" \"_;de:f\" \"(GHI).\" 123 V <= >= <> >< < + > - * /"
+     ^ "\",'abc\"\"_;de:f\"\"(GHI).\"123V<=>=<>><<+>-*/"
     |> generate_token_list)
-    [String ",'abc"; String "_;de:f"; String "(GHI)."; Nat 123; Var 'V';
-               LangleEqual; RangleEqual; NotEqual; NotEqual; Langle; 
-               Plus; Rangle; Minus; Mult; Div]
+    [
+      String ",'abc";
+      String "_;de:f";
+      String "(GHI).";
+      Nat 123;
+      Var 'V';
+      LangleEqual;
+      RangleEqual;
+      NotEqual;
+      NotEqual;
+      Langle;
+      Plus;
+      Rangle;
+      Minus;
+      Mult;
+      Div;
+      String ",'abc";
+      String "_;de:f";
+      String "(GHI).";
+      Nat 123;
+      Var 'V';
+      LangleEqual;
+      RangleEqual;
+      NotEqual;
+      NotEqual;
+      Langle;
+      Plus;
+      Rangle;
+      Minus;
+      Mult;
+      Div;
+    ]
 
 let () =
   let open Alcotest in
