@@ -1,5 +1,5 @@
-open Latsi.Token
 open Latsi.Lexer
+open Latsi.Parser
 open Utils
 
 let generate_token_list (str : string) =
@@ -45,15 +45,15 @@ let test_String_tokenization =
   Test.make ~count:1000
     ~name:
       "Forall string x composed of custom string characters, the token `String \
-       x` is generated" (string_gen generator_custom_char) (fun str ->
+       x` is generated" (list arbitrary_custom_char) (fun char_list ->
+      let str = join_char_list char_list in
       let token_list = generate_token_list ("\"" ^ str ^ "\"") in
       [ String str ] = token_list)
 
 let test_Var_tokenization =
   let open QCheck in
-  Test.make ~count:1000
-    ~name:"Forall x in [A-Z], the token `Var x` is generated" arbitrary_var
-    (fun c -> [ Var c ] = (String.make 1 c |> generate_token_list))
+  Test.make ~count:1000 ~name:"Forall x in [A-Z], Var x is generated"
+    arbitrary_var (fun c -> [ Var c ] = (Char.escaped c |> generate_token_list))
 
 let test_Nat_tokenization =
   let open QCheck in
@@ -109,10 +109,12 @@ let test_Minus_tokenization =
 let test_Mult_tokenization =
   test_token_lists "test_Mult_tokenization"
     ("*" |> generate_token_list)
-    [ Mult ]
+    [ Times ]
 
 let test_Div_tokenization =
-  test_token_lists "test_Div_tokenization" ("/" |> generate_token_list) [ Div ]
+  test_token_lists "test_Div_tokenization"
+    ("/" |> generate_token_list)
+    [ Slash ]
 
 let test_mix_tokenization =
   test_token_lists "test_mix_tokenization"
@@ -133,8 +135,8 @@ let test_mix_tokenization =
       Plus;
       Rangle;
       Minus;
-      Mult;
-      Div;
+      Times;
+      Slash;
       String ",'abc";
       String "_;de:f";
       String "(GHI).";
@@ -148,9 +150,27 @@ let test_mix_tokenization =
       Plus;
       Rangle;
       Minus;
-      Mult;
-      Div;
+      Times;
+      Slash;
     ]
+
+let test_lparen_tokenization =
+  test_token_lists "test_lparen_tokenization"
+    ("(" |> generate_token_list)
+    [ LParen ]
+
+let test_rparen_tokenization =
+  test_token_lists "test_rparen_tokenization"
+    (")" |> generate_token_list)
+    [ RParen ]
+
+let test_parens_tokenization =
+  test_token_lists "test_parens_tokenization"
+    ("()" |> generate_token_list)
+    [ LParen; RParen ]
+
+let test_cr_tokenization =
+  test_token_lists "test_cr_tokenization" ("\n" |> generate_token_list) [ CR ]
 
 let test_invalid_number_float =
   let open QCheck2 in
@@ -179,10 +199,10 @@ let () =
     [
       ( "test_tokenization",
         [
-          test_empty_tokenization;
           QCheck_alcotest.to_alcotest test_Nat_tokenization;
-          QCheck_alcotest.to_alcotest test_String_tokenization;
+          test_empty_tokenization;
           test_empty_String_tokenization;
+          QCheck_alcotest.to_alcotest test_String_tokenization;
           QCheck_alcotest.to_alcotest test_Var_tokenization;
           test_Langle_tokenization;
           test_Rangle_tokenization;
@@ -196,6 +216,10 @@ let () =
           test_Mult_tokenization;
           test_Div_tokenization;
           test_mix_tokenization;
+          test_lparen_tokenization;
+          test_rparen_tokenization;
+          test_parens_tokenization;
+          test_cr_tokenization;
         ] );
       ( "test_illegal_tokenization",
         [

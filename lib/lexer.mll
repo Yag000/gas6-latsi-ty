@@ -1,5 +1,5 @@
 {
-open Token
+open Parser
 
 exception UnkownToken of string
 }
@@ -23,7 +23,11 @@ rule lexer = parse
         | '=' { Equal }
         | '+' { Plus }
         | '-' { Minus }
-        | '*' { Mult }
-        | '/' { Div }
+        | '*' { Times }
+        | '/' { Slash }
+        | '(' { LParen }
+        | ')' { RParen }
+        | "REM" { Rem }
+        | '\n' {CR}
         | eof { EOF }
         | _ as c { raise (UnkownToken (String.make 1 c)) }
