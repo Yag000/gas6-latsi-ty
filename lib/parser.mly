@@ -56,8 +56,6 @@ expression:
     | v=var {Var v}
     | LParen e=expression RParen {e}
 
-
-
 var:
     x=Var { x }
 

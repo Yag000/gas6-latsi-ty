@@ -44,6 +44,7 @@ let () =
         ] );
       ( "Sum",
         [
+          instr_test_case "simple integer" "X = 1" (Assign ('X', Number 1));
           instr_test_case "assign with expression" "X = 1 + 2"
             (Assign ('X', Binop (Add, Number 1, Number 2)));
           instr_test_case "assign with expression" "X = 1 + 2 + 3"
