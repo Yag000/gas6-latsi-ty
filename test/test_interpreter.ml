@@ -172,6 +172,20 @@ let test_remarks =
       empty_constraints;
   ]
 
+let test_line_order =
+  [
+    test_eval "0 X = 1; 0 X = 2" "0 X = 1\n 0 X = 2\n" [ ('X', 2) ];
+    test_eval "0 Y = 1; 0 X = 2" "0 Y = 1\n 0 X = 2\n" [ ('X', 2); ('Y', 0) ];
+    test_eval "0 X = 1; 10 Y = 8 ;0 X = 2" "0 X = 1\n 10 Y = 8 \n 0 X = 2\n"
+      [ ('X', 2); ('Y', 8) ];
+    test_eval "10 X = 1; 0 Y = 1; 6 X = Y + 2"
+      "10 X = 1\n 0 Y = 1\n 6 X = Y + 2\n"
+      [ ('X', 1); ('Y', 1) ];
+    test_eval "10 X = 1; 0 Y = 1; 16 X = Y + 2; 0 Y = 2"
+      "10 X = 1\n 0 Y = 1\n 16 X = Y + 2\n 0 Y = 2\n"
+      [ ('X', 4); ('Y', 2) ];
+  ]
+
 let () =
   run "Interpreter"
     [
@@ -187,4 +201,5 @@ let () =
       ("Parenthesis unops", test_parenthesis_unops);
       ("Atithmetic operations", test_arithmetic_operations);
       ("Remarks", test_remarks);
+      ("Line execution order", test_line_order);
     ]
