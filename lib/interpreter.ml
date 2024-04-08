@@ -33,11 +33,25 @@ module Implementation = struct
     match program with
     | [] -> raise Empty_program
     | _ ->
-        let env = Hashtbl.create 26 in
         (* Initialize the environment with 26 variables A-Z *)
+        let env = Hashtbl.create 26 in
         List.init 26 (fun i -> char_of_int (i + int_of_char 'A'))
         |> List.iter (fun v -> Hashtbl.add env v 0);
-        List.iter (eval_line env) program;
+
+        (* Remove duplicates *)
+        let program_hashtable = Hashtbl.create (List.length program) in
+        List.iter
+          (fun { number; instr } ->
+            Hashtbl.replace program_hashtable number instr)
+          program;
+
+        (* Sort the program by line number *)
+        Hashtbl.to_seq program_hashtable
+        |> List.of_seq
+        |> List.sort (fun (number1, _) (number2, _) -> compare number1 number2)
+        |> List.map (fun (number, instr) -> { number; instr })
+        (* Evaluate the program *)
+        |> List.iter (eval_line env);
         env
 
   let value_of var env = Hashtbl.find env var
