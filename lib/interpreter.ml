@@ -26,6 +26,7 @@ module Implementation = struct
     | Assign (x, e) ->
         let vx = eval_expression env e in
         Hashtbl.replace env x vx
+    | Vavers _ -> assert false (* Not implemented *)
 
   let eval_line env { instr; _ } = eval_instruction env instr
 

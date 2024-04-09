@@ -45,6 +45,7 @@ line:
 instr:
     v=var Equal e=expression { Assign (v,e)}
     | Rem s=String { Rem s }
+    | Vavers e=expression { Vavers e }
 
 expression:
     Plus x=expression { Unop ( Pos, x) }

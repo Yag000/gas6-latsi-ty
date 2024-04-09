@@ -134,6 +134,21 @@ let () =
           fail_instr_test_case "assign with expression" "REM yes";
           fail_instr_test_case "assign with expression" "REM 1";
         ] );
+      ( "VAVERS",
+        [
+          fail_instr_test_case "Empty vavers" "VAVERS";
+          instr_test_case "vavers integer" "VAVERS 1" (Vavers (Number 1));
+          instr_test_case "vavers variable" "VAVERS X" (Vavers (Var 'X'));
+          fail_instr_test_case "vavers string" "VAVERS \"1\"";
+          instr_test_case "vavers expression" "VAVERS 1 + 2"
+            (Vavers (Binop (Add, Number 1, Number 2)));
+          instr_test_case "Complex expression" "VAVERS 1 + 2 * 3 + 4"
+            (Vavers
+               (Binop
+                  ( Add,
+                    Binop (Add, Number 1, Binop (Mul, Number 2, Number 3)),
+                    Number 4 )));
+        ] );
       ( "Line",
         [
           program_test_case "non CR terminated line" "0 X = 1" None;
