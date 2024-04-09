@@ -19,6 +19,7 @@ open Ast
 %token LParen
 %token RParen
 %token Rem
+%token Vavers
 %token CR
 %token EOF
 

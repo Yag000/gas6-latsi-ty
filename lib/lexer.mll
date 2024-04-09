@@ -28,6 +28,7 @@ rule lexer = parse
         | '(' { LParen }
         | ')' { RParen }
         | "REM" { Rem }
+        | "VAVERS" { Vavers }
         | '\n' {CR}
         | eof { EOF }
         | _ as c { raise (UnkownToken (String.make 1 c)) }

@@ -193,6 +193,24 @@ let test_illegal_characters =
 
 let test_numbers_inner_string = test_UnknownToken_string_exception "1 2 3 4"
 
+let test_rem_tokenization =
+  [
+    test_token_lists "test_rem_tokenization"
+      ("REM" |> generate_token_list)
+      [ Rem ];
+    test_UnknownToken_exception "rem";
+    test_UnknownToken_exception "Rem";
+  ]
+
+let test_vavers_tokenization =
+  [
+    test_token_lists "test_vavers_tokenization"
+      ("VAVERS" |> generate_token_list)
+      [ Vavers ];
+    test_UnknownToken_exception "vavers";
+    test_UnknownToken_exception "Vavers";
+  ]
+
 let () =
   let open Alcotest in
   run "Lexer_tests"
@@ -220,7 +238,8 @@ let () =
           test_rparen_tokenization;
           test_parens_tokenization;
           test_cr_tokenization;
-        ] );
+        ]
+        @ test_rem_tokenization @ test_vavers_tokenization );
       ( "test_illegal_tokenization",
         [
           QCheck_alcotest.to_alcotest test_invalid_number_float;
