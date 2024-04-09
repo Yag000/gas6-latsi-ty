@@ -1,6 +1,7 @@
 open Ast
 
 exception Empty_program
+exception Unkwown_line_number
 
 module Implementation = struct
   type env = (char, int) Hashtbl.t
@@ -27,16 +28,21 @@ module Implementation = struct
         let vx = eval_expression env e in
         Hashtbl.replace env x vx;
         None
-    | Vavers _ -> assert false (* Not implemented *)
+    | Vavers e ->
+        let index = eval_expression env e in
+        Some index
 
   let rec eval_program env cur program =
     match cur with
     | None -> ()
     | Some cur -> (
-        let instr, next = Hashtbl.find program cur in
-        match eval_instruction env instr with
-        | None -> eval_program env next program
-        | Some next -> eval_program env next program)
+        (* TODO: Refactor this *)
+        match Hashtbl.find_opt program cur with
+        | None -> raise Unkwown_line_number
+        | Some (instr, next) -> (
+            match eval_instruction env instr with
+            | None -> eval_program env next program
+            | Some next -> eval_program env (Some next) program))
 
   let eval_env program =
     match program with
@@ -62,7 +68,7 @@ module Implementation = struct
                  compare number1 number2)
         in
 
-        (* Setup the program hashtable, which allows us to always have the
+        (* Setup the program hash table, which allows us to always have the
            next instruction and make jumps easier *)
         let program_intrs = Hashtbl.create (List.length program) in
 

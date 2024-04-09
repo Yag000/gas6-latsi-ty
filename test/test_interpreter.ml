@@ -20,11 +20,14 @@ let test_eval name program constraints =
               constraints
         | None -> false))
 
-let test_empty_program program =
-  test_case "Empty program" `Quick (fun () ->
-      check_raises "Empty program" Empty_program (fun () ->
+let test_exception_program name program exn =
+  test_case name `Quick (fun () ->
+      check_raises "Exception" exn (fun () ->
           let _ = eval_str program in
           ()))
+
+let test_empty_program program =
+  test_exception_program "Empty_program" program Empty_program
 
 let test_eval_fail name program =
   let result = eval_env_str program in
@@ -186,6 +189,28 @@ let test_line_order =
       [ ('X', 4); ('Y', 2) ];
   ]
 
+let test_vavers =
+  [
+    test_eval "0 X = 1; 1 VAVERS 3; ; 2 X = 2; 3 Y = 1"
+      "0 X = 1\n 1 VAVERS 3\n 2 X = 2\n 3 Y = 1\n"
+      [ ('X', 1); ('Y', 1) ];
+    test_eval "0 X = 3; 1 VAVERS X; 2 X = 2; 3 Y = 1"
+      "0 X = 3\n 1 VAVERS X\n 2 X = 2\n 3 Y = 1\n"
+      [ ('X', 3); ('Y', 1) ];
+    test_eval "0 X = 1; 1 VAVERS 2+1; 2 X = 2; 3 Y = 1"
+      "0 X = 1\n 1 VAVERS 2+1\n 2 X = 2\n 3 Y = 1\n"
+      [ ('X', 1); ('Y', 1) ];
+    test_eval "0 X = 1; 1 VAVERS 3; ; 2 X = 2; 3 Y = 1; 3 Y = 2"
+      "0 X = 1\n 1 VAVERS 3\n 2 X = 2\n 3 Y = 1\n 3 Y = 2\n"
+      [ ('X', 1); ('Y', 2) ];
+    test_exception_program "Vavers unknown line" "0 VAVERS 1\n 2 X = 1\n"
+      Unkwown_line_number;
+    test_exception_program "Vavers negative line number"
+      "0 VAVERS -11\n 2 X = 1\n" Unkwown_line_number;
+    test_exception_program "Vavers out ouf bounds line number"
+      "0 VAVERS 2\n 1 X = 1\n" Unkwown_line_number;
+  ]
+
 let () =
   run "Interpreter"
     [
@@ -202,4 +227,5 @@ let () =
       ("Atithmetic operations", test_arithmetic_operations);
       ("Remarks", test_remarks);
       ("Line execution order", test_line_order);
+      ("Vavers", test_vavers);
     ]
