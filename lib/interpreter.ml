@@ -22,13 +22,21 @@ module Implementation = struct
     | Var x -> Hashtbl.find env x
 
   let eval_instruction env = function
-    | Rem _ -> ()
+    | Rem _ -> None
     | Assign (x, e) ->
         let vx = eval_expression env e in
-        Hashtbl.replace env x vx
+        Hashtbl.replace env x vx;
+        None
     | Vavers _ -> assert false (* Not implemented *)
 
-  let eval_line env { instr; _ } = eval_instruction env instr
+  let rec eval_program env cur program =
+    match cur with
+    | None -> ()
+    | Some cur -> (
+        let instr, next = Hashtbl.find program cur in
+        match eval_instruction env instr with
+        | None -> eval_program env next program
+        | Some next -> eval_program env next program)
 
   let eval_env program =
     match program with
@@ -47,12 +55,28 @@ module Implementation = struct
           program;
 
         (* Sort the program by line number *)
-        Hashtbl.to_seq program_hashtable
-        |> List.of_seq
-        |> List.sort (fun (number1, _) (number2, _) -> compare number1 number2)
-        |> List.map (fun (number, instr) -> { number; instr })
+        let program =
+          Hashtbl.to_seq program_hashtable
+          |> List.of_seq
+          |> List.sort (fun (number1, _) (number2, _) ->
+                 compare number1 number2)
+        in
+
+        (* Setup the program hashtable, which allows us to always have the
+           next instruction and make jumps easier *)
+        let program_intrs = Hashtbl.create (List.length program) in
+
+        let start =
+          program |> List.rev
+          |> List.fold_left
+               (fun acc (number, instr) ->
+                 Hashtbl.add program_intrs number (instr, acc);
+                 Some number)
+               None
+        in
+
         (* Evaluate the program *)
-        |> List.iter (eval_line env);
+        eval_program env start program_intrs;
         env
 
   let value_of var env = Hashtbl.find env var
