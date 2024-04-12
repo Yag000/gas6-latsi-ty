@@ -20,6 +20,8 @@ open Ast
 %token RParen
 %token Rem
 %token Vavers
+%token Entree
+%token Comma
 %token CR
 %token EOF
 

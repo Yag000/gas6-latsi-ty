@@ -211,6 +211,20 @@ let test_vavers_tokenization =
     test_UnknownToken_exception "Vavers";
   ]
 
+let test_entree_tokenization =
+  [
+    test_token_lists "test_entree_tokenization"
+      ("ENTREE" |> generate_token_list)
+      [ Entree ];
+    test_UnknownToken_exception "entree";
+    test_UnknownToken_exception "Entree";
+  ]
+
+let test_comma_tokenization =
+  test_token_lists "test_comma_tokenization"
+    ("," |> generate_token_list)
+    [ Comma ]
+
 let () =
   let open Alcotest in
   run "Lexer_tests"
@@ -238,8 +252,10 @@ let () =
           test_rparen_tokenization;
           test_parens_tokenization;
           test_cr_tokenization;
+          test_comma_tokenization;
         ]
-        @ test_rem_tokenization @ test_vavers_tokenization );
+        @ test_rem_tokenization @ test_vavers_tokenization
+        @ test_entree_tokenization );
       ( "test_illegal_tokenization",
         [
           QCheck_alcotest.to_alcotest test_invalid_number_float;
