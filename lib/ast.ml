@@ -13,6 +13,7 @@ type instruction =
   | Assign of variable * expression
   | Rem of string (* TODO: Add remaining constructors *)
   | Vavers of expression
+  | Entree of variable list
 
 type line = { number : int; instr : instruction }
 type program = line list
@@ -31,6 +32,7 @@ let equal_instruction i i' =
   | Assign (v, e), Assign (v', e') -> v = v' && equal_expression e e'
   | Rem s, Rem s' -> s = s'
   | Vavers e, Vavers e' -> equal_expression e e'
+  | Entree l, Entree l' -> l = l'
   | _ -> false
 
 let equal_program p1 p2 =
@@ -62,6 +64,11 @@ let pp_instruction ff = function
   | Assign (v, e) -> Format.fprintf ff "%c = %a" v pp_expression e
   | Rem s -> Format.fprintf ff "REM %s" s
   | Vavers e -> Format.fprintf ff "VAVERS %a" pp_expression e
+  | Entree l ->
+      Format.fprintf ff "ENTREE [%a]"
+        Format.(
+          pp_print_list ~pp_sep:(fun out () -> fprintf out ", ") pp_print_char)
+        l
 
 let pp_line ff l = Format.fprintf ff "%d %a" l.number pp_instruction l.instr
 

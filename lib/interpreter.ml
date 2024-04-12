@@ -31,6 +31,8 @@ module Implementation = struct
     | Vavers e ->
         let index = eval_expression env e in
         Some index
+    | Entree [] -> assert false (* Syntax error *)
+    | Entree _ -> assert false (* TODO *)
 
   let rec eval_program env cur program =
     match cur with

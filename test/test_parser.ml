@@ -149,6 +149,22 @@ let () =
                     Binop (Add, Number 1, Binop (Mul, Number 2, Number 3)),
                     Number 4 )));
         ] );
+      ( "ENTREE",
+        [
+          fail_instr_test_case "Empty entree" "ENTREE";
+          fail_instr_test_case "ENTREE ," "ENTREE ,";
+          instr_test_case "entree X" "ENTREE X" (Entree [ 'X' ]);
+          fail_instr_test_case "entree x" "ENTREE x";
+          fail_instr_test_case "entree \"X\"" "ENTREE \"X\"";
+          fail_instr_test_case "entree XY" "ENTREE XY";
+          fail_instr_test_case "entree X Y" "ENTREE X Y";
+          instr_test_case "entree X Y" "ENTREE X, Y" (Entree [ 'X'; 'Y' ]);
+          instr_test_case "entree X Y" "ENTREE X, X" (Entree [ 'X'; 'X' ]);
+          instr_test_case "entree X Y Z" "ENTREE X, Y, Z"
+            (Entree [ 'X'; 'Y'; 'Z' ]);
+          instr_test_case "entree X Y Z" "ENTREE X, Y, X"
+            (Entree [ 'X'; 'Y'; 'X' ]);
+        ] );
       ( "Line",
         [
           program_test_case "non CR terminated line" "0 X = 1" None;

@@ -48,6 +48,7 @@ instr:
     v=var Equal e=expression { Assign (v,e)}
     | Rem s=String { Rem s }
     | Vavers e=expression { Vavers e }
+    | Entree l= separated_nonempty_list(Comma, var) { Entree l }
 
 expression:
     Plus x=expression { Unop ( Pos, x) }
