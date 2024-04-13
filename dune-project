@@ -16,7 +16,7 @@
  (name latsi)
  (synopsis "Interpreter for the LATSI language")
  (description "TODO")
- (depends ocaml dune menhir (alcotest :with-test) qcheck qcheck-alcotest)
+ (depends ocaml dune menhir (alcotest :with-test) qcheck qcheck-alcotest ppx_expect)
  (tags
   (topics "TODO" your project)))
 
