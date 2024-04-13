@@ -9,7 +9,10 @@ and expression =
   | Var of variable
   | Number of int
 
+type expr = String_ of string | Expression of expression
+
 type instruction =
+  | Imprime of expr list
   | Assign of variable * expression
   | Rem of string (* TODO: Add remaining constructors *)
   | Vavers of expression
@@ -60,7 +63,15 @@ let rec pp_expression ff = function
       Format.fprintf ff "(%a %a %a)" pp_expression e1 pp_binop op pp_expression
         e2
 
+let pp_expr ff = function 
+    | String_ s -> Format.fprintf ff "%s" s
+    | Expression e -> pp_expression ff e
+
 let pp_instruction ff = function
+  | Imprime el -> 
+      Format.fprintf ff "IMRPIME [@[<h>%a@]]"
+        Format.(pp_print_list ~pp_sep:(fun out () -> fprintf out ",@ ") pp_expr)
+        el
   | Assign (v, e) -> Format.fprintf ff "%c = %a" v pp_expression e
   | Rem s -> Format.fprintf ff "REM %s" s
   | Vavers e -> Format.fprintf ff "VAVERS %a" pp_expression e

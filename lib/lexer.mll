@@ -31,6 +31,7 @@ rule lexer = parse
         | "VAVERS" { Vavers }
         | "ENTREE" { Entree }
         | ',' { Comma }
+        | "IMPRIME" { Imprime }
         | '\n' {CR}
         | eof { EOF }
         | _ as c { raise (UnkownToken (String.make 1 c)) }
