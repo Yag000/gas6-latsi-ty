@@ -1,0 +1,6 @@
+(library
+ (name expect_tests)
+ (libraries latsi)
+ (preprocess
+  (pps ppx_expect))
+ (inline_tests))
