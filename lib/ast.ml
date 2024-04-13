@@ -65,7 +65,7 @@ let pp_instruction ff = function
   | Rem s -> Format.fprintf ff "REM %s" s
   | Vavers e -> Format.fprintf ff "VAVERS %a" pp_expression e
   | Entree l ->
-      Format.fprintf ff "ENTREE [%a]"
+      Format.fprintf ff "ENTREE @[<hov>%a@]"
         Format.(
           pp_print_list ~pp_sep:(fun out () -> fprintf out ", ") pp_print_char)
         l
