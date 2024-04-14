@@ -32,6 +32,7 @@ rule lexer = parse
         | "ENTREE" { Entree }
         | ',' { Comma }
         | "IMPRIME" { Imprime }
+        | "FIN" { Fin }
         | '\n' {CR}
         | eof { EOF }
         | _ as c { raise (UnkownToken (String.make 1 c)) }

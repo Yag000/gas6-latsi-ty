@@ -238,6 +238,15 @@ let test_imprime_tokenization =
     test_UnknownToken_exception "Imprime";
   ]
 
+let test_fin_tokenization =
+  [
+    test_token_lists "test_fin_tokenization"
+      ("FIN" |> generate_token_list)
+      [ Fin ];
+    test_UnknownToken_exception "fin";
+    test_UnknownToken_exception "Fin";
+  ]
+
 let () =
   let open Alcotest in
   run "Lexer_tests"
@@ -268,7 +277,7 @@ let () =
         ]
         @ test_rem_tokenization @ test_vavers_tokenization
         @ test_entree_tokenization @ test_comma_tokenization
-        @ test_imprime_tokenization );
+        @ test_imprime_tokenization @ test_fin_tokenization );
       ( "test_illegal_tokenization",
         [
           QCheck_alcotest.to_alcotest test_invalid_number_float;

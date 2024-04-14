@@ -23,6 +23,7 @@ open Ast
 %token Entree
 %token Imprime
 %token Comma
+%token Fin
 %token CR
 %token EOF
 
