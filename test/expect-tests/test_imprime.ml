@@ -1,4 +1,3 @@
-open Latsi.Ast
 open Latsi.Interpreter
 
 let eval_str program =
