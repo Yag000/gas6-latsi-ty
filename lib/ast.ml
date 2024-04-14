@@ -67,7 +67,7 @@ let pp_instruction ff = function
   | Entree l ->
       Format.fprintf ff "ENTREE @[<hov>%a@]"
         Format.(
-          pp_print_list ~pp_sep:(fun out () -> fprintf out ", ") pp_print_char)
+          pp_print_list ~pp_sep:(fun out () -> fprintf out ",@ ") pp_print_char)
         l
 
 let pp_line ff l = Format.fprintf ff "%d %a" l.number pp_instruction l.instr
