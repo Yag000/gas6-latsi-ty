@@ -1,77 +1,23 @@
 open Latsi.Ast
 open Latsi.Interpreter
 
-let%expect_test "One IMRPIME, multiple expr" =
-  let program =
-    [
-      {
-        number = 0;
-        instr =
-          Imprime
-            [
-              Expression (Binop (Mul, Number (-1), Number 3));
-              String_ "prout";
-              Expression (Binop (Add, Number (-5), Number 15));
-            ];
-      };
-    ]
-  in
-  eval program;
-  [%expect {|-3prout10|}]
+let eval_str program =
+  let lexbuf = Lexing.from_string program in
+  let ast = Latsi.Parser.input Latsi.Lexer.lexer lexbuf in
+  eval ast
 
-let%expect_test "One IMRPIME, one expr" =
-  let program =
-    [
-      {
-        number = 0;
-        instr =
-          Imprime
-            [
-              String_ "prout"
-            ];
-      };
-    ]
-  in
-  eval program;
-  [%expect {|prout|}]
+let%expect_test "One IMPRIME, one expr" =
+  eval_str "0 IMPRIME \"prout\"\n";
+  [%expect {| prout |}]
 
-let%expect_test "Multi IMRPIME, multiple expr" =
-  let program =
-    [
-      {
-        number = 0;
-        instr =
-          Imprime
-            [
-              Expression (Binop (Mul, Number (-1), Number (-1)));
-              String_ "prout splash";
-              Expression (Number 9999);
-            ];
-      };
-      {
-        number = 1;
-        instr =
-          Imprime
-            [
-              Expression (Binop (Add, Number 1, Number 1));
-              String_ "prout splash";
-              Expression (Number 9999);
-            ];
-      };
-      {
-        number = 2;
-        instr =
-          Imprime
-            [
-              Expression (Binop (Div, Number 6, Number 2));
-              String_ "prout splash";
-              Expression (Number 9999);
-            ];
-      };
-    ]
-  in
-  eval program;
-  [%expect "
-1prout splash9999
-2prout splash9999
-3prout splash9999"]
+let%expect_test "One IMPRIME, multiple expr" =
+  eval_str "0 IMPRIME -3, \"prout\", 10\n";
+  [%expect {| -3prout10 |}]
+
+let%expect_test "Multiple IMPRIME, one expr" =
+  eval_str "0 IMPRIME -1*-1\n1 IMPRIME -1*-2\n";
+  [%expect {| 12 |}]
+
+let%expect_test "Multiple IMPRIME, multiple expr" =
+  eval_str "0 IMPRIME -1*-1, \"prout de fou\"\n1 IMPRIME -1*-2, \"splash de fou\"\n";
+  [%expect {| 1prout de fou2splash de fou |}]

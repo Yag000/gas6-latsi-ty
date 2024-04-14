@@ -70,7 +70,7 @@ let pp_expr ff = function
 
 let pp_instruction ff = function
   | Imprime el -> 
-      Format.fprintf ff "IMRPIME [@[<h>%a@]]"
+      Format.fprintf ff "IMPRIME [@[<h>%a@]]"
         Format.(pp_print_list ~pp_sep:(fun out () -> fprintf out ",@ ") pp_expr)
         el
   | Assign (v, e) -> Format.fprintf ff "%c = %a" v pp_expression e
