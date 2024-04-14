@@ -50,7 +50,6 @@ module Implementation = struct
             | Expression e -> eval_expression env e |> print_int
             | String_ s -> print_string s)
           el;
-        print_newline ();
         None
     | Rem _ -> None
     | Assign (x, e) ->
