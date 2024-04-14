@@ -267,8 +267,8 @@ let () =
           test_cr_tokenization;
         ]
         @ test_rem_tokenization @ test_vavers_tokenization
-        @ test_entree_tokenization
-        @ test_comma_tokenization @ test_imprime_tokenization );
+        @ test_entree_tokenization @ test_comma_tokenization
+        @ test_imprime_tokenization );
       ( "test_illegal_tokenization",
         [
           QCheck_alcotest.to_alcotest test_invalid_number_float;
