@@ -17,6 +17,7 @@ type instruction =
   | Rem of string (* TODO: Add remaining constructors *)
   | Vavers of expression
   | Entree of variable list
+  | Fin
 
 type line = { number : int; instr : instruction }
 type program = line list
@@ -37,6 +38,7 @@ let equal_instruction i i' =
   | Rem s, Rem s' -> s = s'
   | Vavers e, Vavers e' -> equal_expression e e'
   | Entree l, Entree l' -> l = l'
+  | Fin, Fin -> true
   | _ -> false
 
 let equal_program p1 p2 =
@@ -81,6 +83,7 @@ let pp_instruction ff = function
         Format.(
           pp_print_list ~pp_sep:(fun out () -> fprintf out ",@ ") pp_print_char)
         l
+  | Fin -> Format.fprintf ff "FIN"
 
 let pp_line ff l = Format.fprintf ff "%d %a" l.number pp_instruction l.instr
 

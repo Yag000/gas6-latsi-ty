@@ -64,6 +64,7 @@ module Implementation = struct
         let input = read_ints input (List.length vars) in
         List.iter2 (fun var value -> Hashtbl.replace env var value) vars input;
         None
+    | Fin -> assert false (* Todo *)
 
   let rec eval_program env cur program input =
     match cur with

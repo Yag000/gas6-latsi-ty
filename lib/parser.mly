@@ -52,6 +52,7 @@ instr:
     | Vavers e=expression { Vavers e }
     | Entree l= separated_nonempty_list(Comma, var) { Entree l }
     | Imprime el=separated_nonempty_list(Comma, expr) { Imprime el }
+    | Fin { Fin}
 
 expr:
     s=String {String_ s} 
