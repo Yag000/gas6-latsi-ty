@@ -64,12 +64,12 @@ let rec pp_expression ff = function
       Format.fprintf ff "(%a %a %a)" pp_expression e1 pp_binop op pp_expression
         e2
 
-let pp_expr ff = function 
-    | String_ s -> Format.fprintf ff "%s" s
-    | Expression e -> pp_expression ff e
+let pp_expr ff = function
+  | String_ s -> Format.fprintf ff "%s" s
+  | Expression e -> pp_expression ff e
 
 let pp_instruction ff = function
-  | Imprime el -> 
+  | Imprime el ->
       Format.fprintf ff "IMPRIME [@[<h>%a@]]"
         Format.(pp_print_list ~pp_sep:(fun out () -> fprintf out ",@ ") pp_expr)
         el

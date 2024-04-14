@@ -19,5 +19,6 @@ let%expect_test "Multiple IMPRIME, one expr" =
   [%expect {| 12 |}]
 
 let%expect_test "Multiple IMPRIME, multiple expr" =
-  eval_str "0 IMPRIME -1*-1, \"prout de fou\"\n1 IMPRIME -1*-2, \"splash de fou\"\n";
+  eval_str
+    "0 IMPRIME -1*-1, \"prout de fou\"\n1 IMPRIME -1*-2, \"splash de fou\"\n";
   [%expect {| 1prout de fou2splash de fou |}]
