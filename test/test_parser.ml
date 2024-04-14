@@ -159,10 +159,10 @@ let () =
           fail_instr_test_case "entree XY" "ENTREE XY";
           fail_instr_test_case "entree X Y" "ENTREE X Y";
           instr_test_case "entree X Y" "ENTREE X, Y" (Entree [ 'X'; 'Y' ]);
-          instr_test_case "entree X Y" "ENTREE X, X" (Entree [ 'X'; 'X' ]);
+          instr_test_case "entree X X" "ENTREE X, X" (Entree [ 'X'; 'X' ]);
           instr_test_case "entree X Y Z" "ENTREE X, Y, Z"
             (Entree [ 'X'; 'Y'; 'Z' ]);
-          instr_test_case "entree X Y Z" "ENTREE X, Y, X"
+          instr_test_case "entree X Y X" "ENTREE X, Y, X"
             (Entree [ 'X'; 'Y'; 'X' ]);
         ] );
       ( "Line",
