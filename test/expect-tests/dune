@@ -1,6 +1,6 @@
 (library
  (name expect_tests)
- (libraries latsi)
+ (libraries latsi alcotest)
  (preprocess
   (pps ppx_expect))
  (inline_tests))

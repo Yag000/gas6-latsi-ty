@@ -21,6 +21,7 @@ open Ast
 %token Rem
 %token Vavers
 %token Entree
+%token Imprime
 %token Comma
 %token CR
 %token EOF
@@ -49,6 +50,11 @@ instr:
     | Rem s=String { Rem s }
     | Vavers e=expression { Vavers e }
     | Entree l= separated_nonempty_list(Comma, var) { Entree l }
+    | Imprime el=separated_nonempty_list(Comma, expr) { Imprime el }
+
+expr:
+    s=String {String_ s} 
+    | e=expression {Expression e}
 
 expression:
     Plus x=expression { Unop ( Pos, x) }

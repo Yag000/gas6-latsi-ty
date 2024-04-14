@@ -9,7 +9,10 @@ and expression =
   | Var of variable
   | Number of int
 
+type expr = String_ of string | Expression of expression
+
 type instruction =
+  | Imprime of expr list
   | Assign of variable * expression
   | Rem of string
   | Vavers of expression

@@ -44,6 +44,13 @@ module Implementation = struct
         else l
 
   let eval_instruction env input = function
+    | Imprime el ->
+        List.iter
+          (function
+            | Expression e -> eval_expression env e |> print_int
+            | String_ s -> print_string s)
+          el;
+        None
     | Rem _ -> None
     | Assign (x, e) ->
         let vx = eval_expression env e in

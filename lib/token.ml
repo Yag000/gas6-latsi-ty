@@ -20,5 +20,6 @@ let token_to_string = function
   | Vavers -> "Vavers"
   | Entree -> "Entree"
   | Comma -> "Comma"
+  | Imprime -> "Imprime"
   | CR -> "CR"
   | EOF -> "EOF"
