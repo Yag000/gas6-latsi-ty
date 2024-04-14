@@ -230,6 +230,17 @@ let test_entree =
       [ ('X', 3); ('Y', 4) ];
   ]
 
+let test_fin =
+  [
+    test_eval "FIN" "0 FIN\n" empty_constraints;
+    test_eval "FIN; X = 1" "0 FIN\n 1 X = 1\n" empty_constraints;
+    test_eval "VAVERS 1; FIN" "0 VAVERS 1\n 1 FIN\n" empty_constraints;
+    test_eval "VAVERS 1; FIN; X = 2" "0 VAVERS 1\n 1 FIN\n 2 X = 2\n"
+      empty_constraints;
+    test_eval "VAVERS 2; FIN; X = 2" "0 VAVERS 2\n 1 FIN\n 2 X = 2\n"
+      [ ('X', 2) ];
+  ]
+
 let () =
   run "Interpreter"
     [
@@ -248,4 +259,5 @@ let () =
       ("Line execution order", test_line_order);
       ("Vavers", test_vavers);
       ("Entree", test_entree);
+      ("Fin", test_fin);
     ]
