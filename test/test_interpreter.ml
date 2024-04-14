@@ -2,15 +2,16 @@ open Alcotest
 open Latsi.Interpreter
 open Utils
 
-let eval_str program =
+let eval_str program input =
   let lexbuf = Lexing.from_string program in
   let ast = Latsi.Parser.input Latsi.Lexer.lexer lexbuf in
-  Implementation.eval_env ast
+  Implementation.eval_env ~input ast
 
-let eval_env_str program = try Some (eval_str program) with _ -> None
+let eval_env_str ?(input = Implementation.Ints []) program =
+  try Some (eval_str program input) with _ -> None
 
-let test_eval name program constraints =
-  let result = eval_env_str program in
+let test_eval ?(input = Implementation.Ints []) name program constraints =
+  let result = eval_env_str ~input program in
   test_case name `Quick (fun () ->
       check bool "eval" true
         (match result with
@@ -20,17 +21,17 @@ let test_eval name program constraints =
               constraints
         | None -> false))
 
-let test_exception_program name program exn =
+let test_exception_program ?(input = Implementation.Ints []) name program exn =
   test_case name `Quick (fun () ->
       check_raises "Exception" exn (fun () ->
-          let _ = eval_str program in
+          let _ = eval_str program input in
           ()))
 
 let test_empty_program program =
   test_exception_program "Empty_program" program Empty_program
 
-let test_eval_fail name program =
-  let result = eval_env_str program in
+let test_eval_fail ?(input = Implementation.Ints []) name program =
+  let result = eval_env_str ~input program in
   test_case name `Quick (fun () -> check bool "eval" true (result = None))
 
 let qtest_assigment_one_variable =
@@ -211,6 +212,24 @@ let test_vavers =
       "0 VAVERS 2\n 1 X = 1\n" Unkwown_line_number;
   ]
 
+let test_entree =
+  [
+    test_eval ~input:(Implementation.Ints [ 1 ]) "ENTREE (X,1)" "0 ENTREE X\n"
+      [ ('X', 1) ];
+    test_eval
+      ~input:(Implementation.Ints [ 1; 2 ])
+      "ENTREE (X,1), (Y,2)" "0 ENTREE X, Y\n"
+      [ ('X', 1); ('Y', 2) ];
+    test_eval
+      ~input:(Implementation.Ints [ 1; 2; 3 ])
+      "ENTREE (X,1), (Y,2), (X,3)" "0 ENTREE X, Y, X\n"
+      [ ('X', 3); ('Y', 2) ];
+    test_eval
+      ~input:(Implementation.Ints [ 1; 2; 3; 4 ])
+      "ENTREE (X,1), (Y,2), (X,3), (Y,4)" "0 ENTREE X, Y, X, Y\n"
+      [ ('X', 3); ('Y', 4) ];
+  ]
+
 let () =
   run "Interpreter"
     [
@@ -228,4 +247,5 @@ let () =
       ("Remarks", test_remarks);
       ("Line execution order", test_line_order);
       ("Vavers", test_vavers);
+      ("Entree", test_entree);
     ]

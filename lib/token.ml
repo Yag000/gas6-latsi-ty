@@ -18,5 +18,7 @@ let token_to_string = function
   | RParen -> "RParen"
   | Rem -> "Rem"
   | Vavers -> "Vavers"
+  | Entree -> "Entree"
+  | Comma -> "Comma"
   | CR -> "CR"
   | EOF -> "EOF"

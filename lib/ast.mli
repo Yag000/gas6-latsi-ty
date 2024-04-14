@@ -13,6 +13,7 @@ type instruction =
   | Assign of variable * expression
   | Rem of string
   | Vavers of expression
+  | Entree of variable list
 
 type line = { number : int; instr : instruction }
 type program = line list
