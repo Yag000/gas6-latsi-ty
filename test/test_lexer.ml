@@ -221,9 +221,22 @@ let test_entree_tokenization =
   ]
 
 let test_comma_tokenization =
-  test_token_lists "test_comma_tokenization"
-    ("," |> generate_token_list)
-    [ Comma ]
+  [
+    test_token_lists "test_comma_tokenization"
+      ("," |> generate_token_list)
+      [ Comma ];
+    test_UnknownToken_exception "comma";
+    test_UnknownToken_exception "Comma";
+  ]
+
+let test_imprime_tokenization =
+  [
+    test_token_lists "test_imprime_tokenization"
+      ("IMPRIME" |> generate_token_list)
+      [ Imprime ];
+    test_UnknownToken_exception "imprime";
+    test_UnknownToken_exception "Imprime";
+  ]
 
 let () =
   let open Alcotest in
@@ -252,10 +265,10 @@ let () =
           test_rparen_tokenization;
           test_parens_tokenization;
           test_cr_tokenization;
-          test_comma_tokenization;
         ]
         @ test_rem_tokenization @ test_vavers_tokenization
-        @ test_entree_tokenization );
+        @ test_entree_tokenization
+        @ test_comma_tokenization @ test_imprime_tokenization );
       ( "test_illegal_tokenization",
         [
           QCheck_alcotest.to_alcotest test_invalid_number_float;

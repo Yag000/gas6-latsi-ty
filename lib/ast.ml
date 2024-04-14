@@ -32,6 +32,7 @@ let rec equal_expression e e' =
 
 let equal_instruction i i' =
   match (i, i') with
+  | Imprime el, Imprime el' -> el = el'
   | Assign (v, e), Assign (v', e') -> v = v' && equal_expression e e'
   | Rem s, Rem s' -> s = s'
   | Vavers e, Vavers e' -> equal_expression e e'

@@ -165,6 +165,37 @@ let () =
           instr_test_case "entree X Y X" "ENTREE X, Y, X"
             (Entree [ 'X'; 'Y'; 'X' ]);
         ] );
+      ( "IMPRIME",
+        [
+          fail_instr_test_case "Empty imprime" "IMPRIME";
+          instr_test_case "imprime integer" "IMPRIME 1"
+            (Imprime [ Expression (Number 1) ]);
+          instr_test_case "imprime variable" "IMPRIME X"
+            (Imprime [ Expression (Var 'X') ]);
+          fail_instr_test_case "imprime string" "IMPRIME \"1\"";
+          instr_test_case "imprime expression" "IMPRIME 1 + 2"
+            (Imprime [ Expression (Binop (Add, Number 1, Number 2)) ]);
+          instr_test_case "Complex expression" "IMPRIME 1 + 2 * 3 + 4"
+            (Imprime
+               [
+                 Expression
+                   (Binop
+                      ( Add,
+                        Binop (Add, Number 1, Binop (Mul, Number 2, Number 3)),
+                        Number 4 ));
+               ]);
+          instr_test_case "Complex expression with String_"
+            "IMPRIME 1 + 2 * 3 + 4, \"prout\""
+            (Imprime
+               [
+                 Expression
+                   (Binop
+                      ( Add,
+                        Binop (Add, Number 1, Binop (Mul, Number 2, Number 3)),
+                        Number 4 ));
+                 String_ "prout";
+               ]);
+        ] );
       ( "Line",
         [
           program_test_case "non CR terminated line" "0 X = 1" None;
