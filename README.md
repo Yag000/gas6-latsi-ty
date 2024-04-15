@@ -2,7 +2,7 @@
 
 ## How to run the code
 
-The code depends on `menhir` and `dune`, in particular it uses the version `2.1`. You can install yourself the dependencies
+The code depends on `menhir`, `ocamllex` and `dune`, in particular it uses the version `2.1`. You can install yourself the dependencies
 on your global switch or create a local switch and install the dependencies:
 
 ```bash
