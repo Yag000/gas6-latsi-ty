@@ -10,9 +10,9 @@ depends: [
   "dune" {>= "3.14"}
   "menhir"
   "alcotest" {with-test}
-  "qcheck"
-  "qcheck-alcotest"
-  "ppx_expect"
+  "qcheck" {with-test}
+  "qcheck-alcotest" {with-test}
+  "ppx_expect" {with-test}
   "odoc" {with-doc}
 ]
 build: [
