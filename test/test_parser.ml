@@ -196,6 +196,7 @@ let () =
                  String_ "prout";
                ]);
         ] );
+      ("FIN", [ instr_test_case "FIN" "FIN" Fin ]);
       ( "Line",
         [
           program_test_case "non CR terminated line" "0 X = 1" None;

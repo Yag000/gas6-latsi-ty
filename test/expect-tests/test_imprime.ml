@@ -21,3 +21,11 @@ let%expect_test "Multiple IMPRIME, multiple expr" =
   eval_str
     "0 IMPRIME -1*-1, \"prout de fou\"\n1 IMPRIME -1*-2, \"splash de fou\"\n";
   [%expect {| 1prout de fou2splash de fou |}]
+
+let%expect_test "FIN; IMPRIME" =
+  eval_str "0 FIN\n1 IMPRIME \"Gandalf\"\n";
+  [%expect {||}]
+
+let%expect_test "IMPRIME; FIN IMPRIME" =
+  eval_str "0 IMPRIME \"Gandalf\"\n1 FIN\n2 IMPRIME \"Olorin\"\n";
+  [%expect {| Gandalf |}]

@@ -17,6 +17,7 @@ type instruction =
   | Rem of string
   | Vavers of expression
   | Entree of variable list
+  | Fin
 
 type line = { number : int; instr : instruction }
 type program = line list

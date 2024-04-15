@@ -21,5 +21,6 @@ let token_to_string = function
   | Entree -> "Entree"
   | Comma -> "Comma"
   | Imprime -> "Imprime"
+  | Fin -> "Fin"
   | CR -> "CR"
   | EOF -> "EOF"

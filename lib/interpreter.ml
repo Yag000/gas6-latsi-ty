@@ -43,6 +43,8 @@ module Implementation = struct
           assert false
         else l
 
+  type instruction_result = Next | Jump of int | End
+
   let eval_instruction env input = function
     | Imprime el ->
         List.iter
@@ -50,32 +52,33 @@ module Implementation = struct
             | Expression e -> eval_expression env e |> print_int
             | String_ s -> print_string s)
           el;
-        None
-    | Rem _ -> None
+        Next
+    | Rem _ -> Next
     | Assign (x, e) ->
         let vx = eval_expression env e in
         Hashtbl.replace env x vx;
-        None
+        Next
     | Vavers e ->
         let index = eval_expression env e in
-        Some index
+        Jump index
     | Entree [] -> assert false (* Syntax error *)
     | Entree vars ->
         let input = read_ints input (List.length vars) in
         List.iter2 (fun var value -> Hashtbl.replace env var value) vars input;
-        None
+        Next
+    | Fin -> End
 
   let rec eval_program env cur program input =
     match cur with
     | None -> ()
     | Some cur -> (
-        (* TODO: Refactor this *)
         match Hashtbl.find_opt program cur with
         | None -> raise Unkwown_line_number
         | Some (instr, next) -> (
             match eval_instruction env input instr with
-            | None -> eval_program env next program input
-            | Some next -> eval_program env (Some next) program input))
+            | Next -> eval_program env next program input
+            | Jump next -> eval_program env (Some next) program input
+            | End -> ()))
 
   let eval_env ?(input = Stdin) program =
     match program with
