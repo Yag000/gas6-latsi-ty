@@ -12,7 +12,7 @@ build:
   image: yag000/dune-testing:latest
 
   script:
-    - opam install . --deps-only --with-test --with-doc --yes
+    - opam install . --deps-only --with-test --yes
 
     - eval $(opam env)
 
@@ -30,7 +30,7 @@ format:
   image: yag000/dune-testing:latest
 
   script:
-    - opam install . --deps-only --with-test --with-doc --yes
+    - opam install . --deps-only --with-test --yes
 
     - eval $(opam env)
 
