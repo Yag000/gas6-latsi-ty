@@ -19,19 +19,26 @@ let%expect_test "IMPRIME; NL; NL; IMPRIME" =
 
 let%expect_test "NL; IMPRIME; NL; IMPRIME; NL" =
   eval_str
-    "0 NL\n1 IMPRIME -1*-1, \"Yavanna\"\n2 NL\n3 IMPRIME -1*-2, \"Kementari\"\n4 NL\n";
+    "0 NL\n\
+     1 IMPRIME -1*-1, \"Yavanna\"\n\
+     2 NL\n\
+     3 IMPRIME -1*-2, \"Kementari\"\n\
+     4 NL\n";
   [%expect_exact {|
 1Yavanna
 2Kementari
 |}]
 
 let%expect_test "FIN; NL" =
-  eval_str
-    "0 FIN\n1 NL\n";
+  eval_str "0 FIN\n1 NL\n";
   [%expect_exact {||}]
 
 let%expect_test "NL; IMPRIME; FIN; NL; IMPRIME" =
   eval_str
-    "0 NL\n1 IMPRIME -1*-1, \"Yavanna\"\n2 FIN\n3 NL\n4 IMPRIME -1*-2, \"Kementari\"\n";
+    "0 NL\n\
+     1 IMPRIME -1*-1, \"Yavanna\"\n\
+     2 FIN\n\
+     3 NL\n\
+     4 IMPRIME -1*-2, \"Kementari\"\n";
   [%expect_exact {|
 1Yavanna|}]
