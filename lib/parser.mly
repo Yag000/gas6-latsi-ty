@@ -24,6 +24,7 @@ open Ast
 %token Imprime
 %token Comma
 %token Fin
+%token Nl
 %token CR
 %token EOF
 
@@ -53,6 +54,7 @@ instr:
     | Entree l= separated_nonempty_list(Comma, var) { Entree l }
     | Imprime el=separated_nonempty_list(Comma, expr) { Imprime el }
     | Fin { Fin}
+    | Nl { Nl }
 
 expr:
     s=String {String_ s} 

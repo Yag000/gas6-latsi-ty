@@ -18,6 +18,7 @@ type instruction =
   | Vavers of expression
   | Entree of variable list
   | Fin
+  | Nl
 
 type line = { number : int; instr : instruction }
 type program = line list

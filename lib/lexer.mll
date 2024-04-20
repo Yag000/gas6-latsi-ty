@@ -27,6 +27,7 @@ rule lexer = parse
         | '/' { Slash }
         | '(' { LParen }
         | ')' { RParen }
+        | "NL" { Nl }
         | "REM" { Rem }
         | "VAVERS" { Vavers }
         | "ENTREE" { Entree }

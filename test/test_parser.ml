@@ -197,6 +197,7 @@ let () =
                ]);
         ] );
       ("FIN", [ instr_test_case "FIN" "FIN" Fin ]);
+      ("NL", [ instr_test_case "NL" "NL" Nl ]);
       ( "Line",
         [
           program_test_case "non CR terminated line" "0 X = 1" None;

@@ -67,6 +67,9 @@ module Implementation = struct
         List.iter2 (fun var value -> Hashtbl.replace env var value) vars input;
         Next
     | Fin -> End
+    | Nl ->
+        print_newline ();
+        Next
 
   let rec eval_program env cur program input =
     match cur with
