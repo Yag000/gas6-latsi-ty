@@ -255,6 +255,22 @@ let test_nl_tokenization =
     test_UnknownToken_exception "nl";
   ]
 
+let test_si_tokenization =
+  [
+    test_token_lists "test_si_tokenization" ("SI" |> generate_token_list) [ Si ];
+    test_UnknownToken_exception "si";
+    test_UnknownToken_exception "Si";
+  ]
+
+let test_alors_tokenization =
+  [
+    test_token_lists "test_alors_tokenization"
+      ("ALORS" |> generate_token_list)
+      [ Alors ];
+    test_UnknownToken_exception "alors";
+    test_UnknownToken_exception "Alors";
+  ]
+
 let () =
   let open Alcotest in
   run "Lexer_tests"
@@ -286,7 +302,8 @@ let () =
         @ test_rem_tokenization @ test_vavers_tokenization
         @ test_entree_tokenization @ test_comma_tokenization
         @ test_imprime_tokenization @ test_fin_tokenization
-        @ test_nl_tokenization );
+        @ test_nl_tokenization
+        @ test_si_tokenization @ test_alors_tokenization );
       ( "test_illegal_tokenization",
         [
           QCheck_alcotest.to_alcotest test_invalid_number_float;

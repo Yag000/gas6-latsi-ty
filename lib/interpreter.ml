@@ -53,7 +53,7 @@ module Implementation = struct
 
   type instruction_result = Next | Jump of int | End
 
-  let eval_instruction env input = function
+  let rec eval_instruction env input = function
     | Imprime el ->
         List.iter
           (function
@@ -71,11 +71,7 @@ module Implementation = struct
         Jump index
     | SiAlors (r, e1, e2, i) ->
         if eval_relop r (eval_expression env e1) (eval_expression env e2) then
-          match i with
-          | Vavers e ->
-              let index = eval_expression env e in
-              Jump index
-          | _ -> Next
+          eval_instruction env input i
         else Next
     | Entree [] -> assert false (* Syntax error *)
     | Entree vars ->

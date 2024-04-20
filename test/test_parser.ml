@@ -149,6 +149,16 @@ let () =
                     Binop (Add, Number 1, Binop (Mul, Number 2, Number 3)),
                     Number 4 )));
         ] );
+      ( "SI ALORS",
+        [
+          fail_instr_test_case "Incomplete SI" "SI";
+          fail_instr_test_case "Incomplete ALORS" "ALORS";
+          fail_instr_test_case "Incomplete SI ALORS" "SI ALORS";
+          instr_test_case "SI 1 = 2 ALORS X = 2" "SI 1 = 2 ALORS X = 2"
+            (SiAlors (Eq, Number 1, Number 2, Assign ('X', Number 2)));
+          instr_test_case "SI 1 = 2 ALORS X = 2" "SI 1 = 2 ALORS VAVERS 2"
+            (SiAlors (Eq, Number 1, Number 2, Vavers (Number 2)));
+        ] );
       ( "ENTREE",
         [
           fail_instr_test_case "Empty entree" "ENTREE";
