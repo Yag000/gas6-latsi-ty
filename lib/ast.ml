@@ -1,7 +1,8 @@
 type variable = char
 type unop = Pos | Neg
-
 type binop = Add | Sub | Mul | Div
+
+type relop = Lt | Gt | Le | Ge | Ne | Eq
 
 and expression =
   | Binop of binop * expression * expression
@@ -16,6 +17,7 @@ type instruction =
   | Assign of variable * expression
   | Rem of string (* TODO: Add remaining constructors *)
   | Vavers of expression
+  | SiAlors of relop * expression * expression * instruction
   | Entree of variable list
   | Fin
   | Nl
@@ -32,7 +34,7 @@ let rec equal_expression e e' =
   | Number n, Number n' -> n = n'
   | _ -> false
 
-let equal_instruction i i' =
+let rec equal_instruction i i' =
   match (i, i') with
   | Imprime el, Imprime el' -> el = el'
   | Assign (v, e), Assign (v', e') -> v = v' && equal_expression e e'
@@ -41,6 +43,9 @@ let equal_instruction i i' =
   | Entree l, Entree l' -> l = l'
   | Fin, Fin -> true
   | Nl, Nl -> true
+  | SiAlors (r, e1, e2, i), SiAlors (r', e1', e2', i') ->
+      r = r' && equal_expression e1 e1' && equal_expression e2 e2'
+      && equal_instruction i i'
   | _ -> false
 
 let equal_program p1 p2 =
@@ -72,12 +77,23 @@ let pp_expr ff = function
   | String_ s -> Format.fprintf ff "%s" s
   | Expression e -> pp_expression ff e
 
-let pp_instruction ff = function
+let pp_relop ff = function
+  | Lt -> Format.fprintf ff "<"
+  | Gt -> Format.fprintf ff ">"
+  | Le -> Format.fprintf ff "<="
+  | Ge -> Format.fprintf ff ">="
+  | Ne -> Format.fprintf ff "<>"
+  | Eq -> Format.fprintf ff "="
+
+let rec pp_instruction ff = function
   | Imprime el ->
       Format.fprintf ff "IMPRIME [@[<h>%a@]]"
         Format.(pp_print_list ~pp_sep:(fun out () -> fprintf out ",@ ") pp_expr)
         el
   | Assign (v, e) -> Format.fprintf ff "%c = %a" v pp_expression e
+  | SiAlors (r, e1, e2, i) ->
+      Format.fprintf ff "SI (%a) %a (%a) ALORS (%a)" pp_expression e1 pp_relop r
+        pp_expression e2 pp_instruction i
   | Rem s -> Format.fprintf ff "REM %s" s
   | Vavers e -> Format.fprintf ff "VAVERS %a" pp_expression e
   | Entree l ->

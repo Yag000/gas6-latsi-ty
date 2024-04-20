@@ -1,7 +1,8 @@
 type variable = char
 type unop = Pos | Neg
-
 type binop = Add | Sub | Mul | Div
+
+type relop = Lt | Gt | Le | Ge | Ne | Eq
 
 and expression =
   | Binop of binop * expression * expression
@@ -16,6 +17,7 @@ type instruction =
   | Assign of variable * expression
   | Rem of string
   | Vavers of expression
+  | SiAlors of relop * expression * expression * instruction
   | Entree of variable list
   | Fin
   | Nl

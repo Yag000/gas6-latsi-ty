@@ -12,6 +12,14 @@ module Implementation = struct
     | Mul -> ( * )
     | Div -> ( / )
 
+  let eval_relop = function
+    | Lt -> ( < )
+    | Gt -> ( > )
+    | Le -> ( <= )
+    | Ge -> ( >= )
+    | Ne -> ( <> )
+    | Eq -> ( = )
+
   let rec eval_expression env = function
     | Binop (op, e1, e2) ->
         let v1 = eval_expression env e1 in
@@ -61,6 +69,14 @@ module Implementation = struct
     | Vavers e ->
         let index = eval_expression env e in
         Jump index
+    | SiAlors (r, e1, e2, i) ->
+        if eval_relop r (eval_expression env e1) (eval_expression env e2) then
+          match i with
+          | Vavers e ->
+              let index = eval_expression env e in
+              Jump index
+          | _ -> Next
+        else Next
     | Entree [] -> assert false (* Syntax error *)
     | Entree vars ->
         let input = read_ints input (List.length vars) in

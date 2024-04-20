@@ -18,6 +18,8 @@ let token_to_string = function
   | RParen -> "RParen"
   | Rem -> "Rem"
   | Vavers -> "Vavers"
+  | Si -> "Si"
+  | Alors -> "Alors"
   | Entree -> "Entree"
   | Comma -> "Comma"
   | Imprime -> "Imprime"
