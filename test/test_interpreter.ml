@@ -16,10 +16,12 @@ let eval_env_str ?(input = Implementation.Ints []) program =
   try Some (eval_str program input) with _ -> None
 
 let test_eval ?(input = Implementation.Ints []) name program new_constraints =
-    (* Build the full constraints *)
-    let default_constraints_copy = Hashtbl.copy default_constraints in
-    Hashtbl.replace_seq default_constraints_copy (new_constraints |> List.to_seq);
-  let full_constraints = default_constraints_copy |> Hashtbl.to_seq |> List.of_seq in
+  (* Build the full constraints *)
+  let default_constraints_copy = Hashtbl.copy default_constraints in
+  Hashtbl.replace_seq default_constraints_copy (new_constraints |> List.to_seq);
+  let full_constraints =
+    default_constraints_copy |> Hashtbl.to_seq |> List.of_seq
+  in
   let result = eval_env_str ~input program in
   test_case name `Quick (fun () ->
       check bool "eval" true
@@ -381,6 +383,29 @@ let test_fin =
       [ ('X', 2) ];
   ]
 
+let test_programs =
+  [
+    test_eval "Simple program"
+      "5 REM \"Ce programme est formidable.\"\n\
+       10 IMPRIME \"Bonjour Paris\"\n\
+       15 NL\n\
+       20 I = 0\n\
+       30 SI I > 10 ALORS VAVERS 40\n\
+       35 IMPRIME I, \" \"\n\
+       37 I = I + 1\n\
+       39 VAVERS 30\n\
+       40 FIN\n\
+       50 IMPRIME \"ne s'imprime pas\"\n"
+      [ ('I', 11) ];
+    test_eval "Powers of 2"
+      "0 X = 1\n\
+       10 IMPRIME X\n\
+       20 X = X * 2\n\
+       30 SI X < 100 ALORS VAVERS 10\n\
+       40 FIN\n"
+      [ ('X', 128) ];
+  ]
+
 let () =
   run "Interpreter"
     [
@@ -401,4 +426,5 @@ let () =
       ("SiAlors", test_si_alors);
       ("Entree", test_entree);
       ("Fin", test_fin);
+      ("Programs", test_programs);
     ]
