@@ -223,7 +223,7 @@ let test_si_alors =
       "0 SI 1 = 1 ALORS VAVERS 2\n1 X = 200\n2 Y = 300\n"
       [ ('Y', 300) ];
     test_eval "0 SI 0 = 1 ALORS VAVERS 2; 1 X = 200; 2 Y = 300"
-      "0 SI 1 = 1 ALORS VAVERS 2\n1 X = 200\n2 Y = 300\n"
+      "0 SI 0 = 1 ALORS VAVERS 2\n1 X = 200\n2 Y = 300\n"
       [ ('X', 200); ('Y', 300) ];
   ]
 
