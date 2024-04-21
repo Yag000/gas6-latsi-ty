@@ -92,7 +92,7 @@ let rec pp_instruction ff = function
         el
   | Assign (v, e) -> Format.fprintf ff "%c = %a" v pp_expression e
   | SiAlors (r, e1, e2, i) ->
-      Format.fprintf ff "SI (%a) %a (%a) ALORS (%a)" pp_expression e1 pp_relop r
+      Format.fprintf ff "SI [%a] %a [%a] ALORS [%a]" pp_expression e1 pp_relop r
         pp_expression e2 pp_instruction i
   | Rem s -> Format.fprintf ff "REM %s" s
   | Vavers e -> Format.fprintf ff "VAVERS %a" pp_expression e
