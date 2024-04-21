@@ -212,20 +212,139 @@ let test_vavers =
       "0 VAVERS 2\n 1 X = 1\n" Unkwown_line_number;
   ]
 
-let test_si_alors =
+let test_si_alors_lt =
   [
-    test_eval "0 SI 1 = 1 ALORS X = 200" "0 SI 1 = 1 ALORS X = 200\n"
+    test_eval "Simple SI true Lt ALORS ASSIGN" "0 SI 0 < 1 ALORS X = 200\n"
       [ ('X', 200) ];
-    test_eval "0 SI 0 = 1 ALORS X = 200; 1 Y = 300"
+    test_eval "Simple SI false Lt ALORS ASSIGN"
+      "0 SI 1 < 1 ALORS X = 200\n1 Y = 300\n"
+      [ ('Y', 300); ('X', 0) ];
+    test_eval "Simple SI true Lt ALORS VAVERS"
+      "0 SI 0 < 1 ALORS VAVERS 2\n1 X = 200\n2 Y = 300\n"
+      [ ('Y', 300); ('X', 0) ];
+    test_eval "Simple SI false Lt ALORS VAVERS"
+      "0 SI 1 < 1 ALORS VAVERS 2\n1 X = 200\n2 Y = 300\n"
+      [ ('X', 200); ('Y', 300) ];
+  ]
+
+let test_si_alors_gt =
+  [
+    test_eval "Simple SI true Gt ALORS ASSIGN" "0 SI 2 > 1 ALORS X = 200\n"
+      [ ('X', 200) ];
+    test_eval "Simple SI false Gt ALORS ASSIGN"
+      "0 SI 1 > 1 ALORS X = 200\n1 Y = 300\n"
+      [ ('Y', 300); ('X', 0) ];
+    test_eval "Simple SI true Gt ALORS VAVERS"
+      "0 SI 2 > 1 ALORS VAVERS 2\n1 X = 200\n2 Y = 300\n"
+      [ ('Y', 300); ('X', 0) ];
+    test_eval "Simple SI false Gt ALORS VAVERS"
+      "0 SI 1 > 1 ALORS VAVERS 2\n1 X = 200\n2 Y = 300\n"
+      [ ('X', 200); ('Y', 300) ];
+  ]
+
+let test_si_alors_le =
+  [
+    test_eval "Simple SI true Le ALORS ASSIGN" "0 SI 0 <= 1 ALORS X = 200\n"
+      [ ('X', 200) ];
+    test_eval "Simple SI false Le ALORS ASSIGN"
+      "0 SI 2 <= 1 ALORS X = 200\n1 Y = 300\n"
+      [ ('Y', 300); ('X', 0) ];
+    test_eval "Simple SI true Le ALORS VAVERS"
+      "0 SI 0 <= 1 ALORS VAVERS 2\n1 X = 200\n2 Y = 300\n"
+      [ ('Y', 300); ('X', 0) ];
+    test_eval "Simple SI false Le ALORS VAVERS"
+      "0 SI 2 <= 1 ALORS VAVERS 2\n1 X = 200\n2 Y = 300\n"
+      [ ('X', 200); ('Y', 300) ];
+  ]
+
+let test_si_alors_ge =
+  [
+    test_eval "Simple SI true Ge ALORS ASSIGN" "0 SI 1 >= 1 ALORS X = 200\n"
+      [ ('X', 200) ];
+    test_eval "Simple SI false Ge ALORS ASSIGN"
+      "0 SI 0 >= 1 ALORS X = 200\n1 Y = 300\n"
+      [ ('Y', 300); ('X', 0) ];
+    test_eval "Simple SI true Ge ALORS VAVERS"
+      "0 SI 1 >= 1 ALORS VAVERS 2\n1 X = 200\n2 Y = 300\n"
+      [ ('Y', 300); ('X', 0) ];
+    test_eval "Simple SI false Ge ALORS VAVERS"
+      "0 SI 0 >= 1 ALORS VAVERS 2\n1 X = 200\n2 Y = 300\n"
+      [ ('X', 200); ('Y', 300) ];
+  ]
+
+let test_si_alors_eq =
+  [
+    test_eval "Simple SI true Eq ALORS ASSIGN" "0 SI 1 = 1 ALORS X = 200\n"
+      [ ('X', 200) ];
+    test_eval "Simple SI false Eq ALORS ASSIGN"
       "0 SI 0 = 1 ALORS X = 200\n1 Y = 300\n"
       [ ('Y', 300); ('X', 0) ];
-    test_eval "0 SI 1 = 1 ALORS VAVERS 2; 1 X = 200; 2 Y = 300"
+    test_eval "Simple SI true Eq ALORS VAVERS"
       "0 SI 1 = 1 ALORS VAVERS 2\n1 X = 200\n2 Y = 300\n"
       [ ('Y', 300); ('X', 0) ];
-    test_eval "0 SI 0 = 1 ALORS VAVERS 2; 1 X = 200; 2 Y = 300"
+    test_eval "Simple SI false Eq ALORS VAVERS"
       "0 SI 0 = 1 ALORS VAVERS 2\n1 X = 200\n2 Y = 300\n"
       [ ('X', 200); ('Y', 300) ];
   ]
+
+let test_si_alors_ne1 =
+  [
+    test_eval "Simple SI true Ne1 ALORS ASSIGN" "0 SI 2 <> 1 ALORS X = 200\n"
+      [ ('X', 200) ];
+    test_eval "Simple SI false Ne1 ALORS ASSIGN"
+      "0 SI 1 <> 1 ALORS X = 200\n1 Y = 300\n"
+      [ ('Y', 300); ('X', 0) ];
+    test_eval "Simple SI true Ne1 ALORS VAVERS"
+      "0 SI 2 <> 1 ALORS VAVERS 2\n1 X = 200\n2 Y = 300\n"
+      [ ('Y', 300); ('X', 0) ];
+    test_eval "Simple SI false Ne1 ALORS VAVERS"
+      "0 SI 1 <> 1 ALORS VAVERS 2\n1 X = 200\n2 Y = 300\n"
+      [ ('X', 200); ('Y', 300) ];
+  ]
+
+let test_si_alors_ne2 =
+  [
+    test_eval "Simple SI true Ne2 ALORS ASSIGN" "0 SI 2 >< 1 ALORS X = 200\n"
+      [ ('X', 200) ];
+    test_eval "Simple SI false Ne2 ALORS ASSIGN"
+      "0 SI 1 >< 1 ALORS X = 200\n1 Y = 300\n"
+      [ ('Y', 300); ('X', 0) ];
+    test_eval "Simple SI true Ne2 ALORS VAVERS"
+      "0 SI 2 >< 1 ALORS VAVERS 2\n1 X = 200\n2 Y = 300\n"
+      [ ('Y', 300); ('X', 0) ];
+    test_eval "Simple SI false Ne2 ALORS VAVERS"
+      "0 SI 1 >< 1 ALORS VAVERS 2\n1 X = 200\n2 Y = 300\n"
+      [ ('X', 200); ('Y', 300) ];
+  ]
+
+let test_si_alors_nested =
+  [
+    test_eval
+      "Nested SI true Eq ALORS [SI true Ne1 ALORS [Si true Lt ALORS ASSIGN]]; \
+       ASSIGN"
+      "0 SI 1 = 1 ALORS SI 1 <> 2 ALORS SI 1 < 2 ALORS X = 200\n 1 Y = 300\n"
+      [ ('X', 200); ('Y', 300) ];
+    test_eval
+      "Nested SI false Eq ALORS [SI true Ne1 ALORS [Si true Lt ALORS ASSIGN]]; \
+       ASSIGN"
+      "0 SI 0 = 1 ALORS SI 1 <> 2 ALORS SI 1 < 2 ALORS X = 200\n 1 Y = 300\n"
+      [ ('X', 0); ('Y', 300) ];
+    test_eval
+      "Nested SI true Eq ALORS [SI false Ne1 ALORS [Si true Lt ALORS ASSIGN]]; \
+       ASSIGN"
+      "0 SI 1 = 1 ALORS SI 2 <> 2 ALORS SI 1 < 2 ALORS X = 200\n 1 Y = 300\n"
+      [ ('X', 0); ('Y', 300) ];
+    test_eval
+      "Nested SI true Eq ALORS [SI true Ne1 ALORS [Si false Lt ALORS ASSIGN]]; \
+       ASSIGN"
+      "0 SI 1 = 1 ALORS SI 1 <> 2 ALORS SI 3 < 2 ALORS X = 200\n 1 Y = 300\n"
+      [ ('X', 0); ('Y', 300) ];
+  ]
+
+let test_si_alors =
+  test_si_alors_lt @ test_si_alors_gt @ test_si_alors_le @ test_si_alors_ge
+  @ test_si_alors_ne1 @ test_si_alors_ne2 @ test_si_alors_eq
+  @ test_si_alors_nested
 
 let test_entree =
   [

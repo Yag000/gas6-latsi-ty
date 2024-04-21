@@ -302,8 +302,8 @@ let () =
         @ test_rem_tokenization @ test_vavers_tokenization
         @ test_entree_tokenization @ test_comma_tokenization
         @ test_imprime_tokenization @ test_fin_tokenization
-        @ test_nl_tokenization
-        @ test_si_tokenization @ test_alors_tokenization );
+        @ test_nl_tokenization @ test_si_tokenization @ test_alors_tokenization
+      );
       ( "test_illegal_tokenization",
         [
           QCheck_alcotest.to_alcotest test_invalid_number_float;

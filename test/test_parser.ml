@@ -154,10 +154,50 @@ let () =
           fail_instr_test_case "Incomplete SI" "SI";
           fail_instr_test_case "Incomplete ALORS" "ALORS";
           fail_instr_test_case "Incomplete SI ALORS" "SI ALORS";
-          instr_test_case "SI 1 = 2 ALORS X = 2" "SI 1 = 2 ALORS X = 2"
+          instr_test_case "Simple SI Eq ALORS ASSIGN" "SI 1 = 2 ALORS X = 2"
             (SiAlors (Eq, Number 1, Number 2, Assign ('X', Number 2)));
-          instr_test_case "SI 1 = 2 ALORS X = 2" "SI 1 = 2 ALORS VAVERS 2"
+          instr_test_case "Simple SI Gt ALORS ASSIGN" "SI 1 > 2 ALORS X = 2"
+            (SiAlors (Gt, Number 1, Number 2, Assign ('X', Number 2)));
+          instr_test_case "Simple SI Ge ALORS ASSIGN" "SI 1 >= 2 ALORS X = 2"
+            (SiAlors (Ge, Number 1, Number 2, Assign ('X', Number 2)));
+          instr_test_case "Simple SI Lt ALORS ASSIGN" "SI 1 < 2 ALORS X = 2"
+            (SiAlors (Lt, Number 1, Number 2, Assign ('X', Number 2)));
+          instr_test_case "Simple SI Le ALORS ASSIGN" "SI 1 <= 2 ALORS X = 2"
+            (SiAlors (Le, Number 1, Number 2, Assign ('X', Number 2)));
+          instr_test_case "Simple SI Ne1 ALORS ASSIGN" "SI 1 <> 2 ALORS X = 2"
+            (SiAlors (Ne, Number 1, Number 2, Assign ('X', Number 2)));
+          instr_test_case "Simple SI Ne2 ALORS ASSIGN" "SI 1 >< 2 ALORS X = 2"
+            (SiAlors (Ne, Number 1, Number 2, Assign ('X', Number 2)));
+          instr_test_case "Nested SI Le ALORS [SI Ne ALORS ASSIGN]"
+            "SI -1 <= 1 ALORS SI 1 <> 2 ALORS X = 200"
+            (SiAlors
+               ( Le,
+                 Unop (Neg, Number 1),
+                 Number 1,
+                 SiAlors (Ne, Number 1, Number 2, Assign ('X', Number 200)) ));
+          instr_test_case "Simple SI Eq ALORS VAVERS" "SI 1 = 2 ALORS VAVERS 2"
             (SiAlors (Eq, Number 1, Number 2, Vavers (Number 2)));
+          instr_test_case "Simple SI Gt ALORS VAVERS" "SI 1 > 2 ALORS VAVERS 2"
+            (SiAlors (Gt, Number 1, Number 2, Vavers (Number 2)));
+          instr_test_case "Simple SI Ge ALORS VAVERS" "SI 1 >= 2 ALORS VAVERS 2"
+            (SiAlors (Ge, Number 1, Number 2, Vavers (Number 2)));
+          instr_test_case "Simple SI Lt ALORS VAVERS" "SI 1 < 2 ALORS VAVERS 2"
+            (SiAlors (Lt, Number 1, Number 2, Vavers (Number 2)));
+          instr_test_case "Simple SI Le ALORS VAVERS" "SI 1 <= 2 ALORS VAVERS 2"
+            (SiAlors (Le, Number 1, Number 2, Vavers (Number 2)));
+          instr_test_case "Simple SI Ne1 ALORS VAVERS"
+            "SI 1 <> 2 ALORS VAVERS 2"
+            (SiAlors (Ne, Number 1, Number 2, Vavers (Number 2)));
+          instr_test_case "Simple SI Ne2 ALORS VAVERS"
+            "SI 1 >< 2 ALORS VAVERS 2"
+            (SiAlors (Ne, Number 1, Number 2, Vavers (Number 2)));
+          instr_test_case "Nested SI Le ALORS [SI Eq ALORS VAVERS]"
+            "SI -1 <= 1 ALORS SI 1 <> 2 ALORS VAVERS 200"
+            (SiAlors
+               ( Le,
+                 Unop (Neg, Number 1),
+                 Number 1,
+                 SiAlors (Ne, Number 1, Number 2, Vavers (Number 200)) ));
         ] );
       ( "ENTREE",
         [
