@@ -2,6 +2,11 @@ open Alcotest
 open Latsi.Interpreter
 open Utils
 
+let empty_constraints =
+  List.init 26 (fun i -> (char_of_int (i + int_of_char 'A'), 0))
+
+let default_constraints = empty_constraints |> List.to_seq |> Hashtbl.of_seq
+
 let eval_str program input =
   let lexbuf = Lexing.from_string program in
   let ast = Latsi.Parser.input Latsi.Lexer.lexer lexbuf in
@@ -10,7 +15,11 @@ let eval_str program input =
 let eval_env_str ?(input = Implementation.Ints []) program =
   try Some (eval_str program input) with _ -> None
 
-let test_eval ?(input = Implementation.Ints []) name program constraints =
+let test_eval ?(input = Implementation.Ints []) name program new_constraints =
+    (* Build the full constraints *)
+    let default_constraints_copy = Hashtbl.copy default_constraints in
+    Hashtbl.replace_seq default_constraints_copy (new_constraints |> List.to_seq);
+  let full_constraints = default_constraints_copy |> Hashtbl.to_seq |> List.of_seq in
   let result = eval_env_str ~input program in
   test_case name `Quick (fun () ->
       check bool "eval" true
@@ -18,7 +27,7 @@ let test_eval ?(input = Implementation.Ints []) name program constraints =
         | Some env ->
             List.for_all
               (fun (n, v) -> Implementation.is_correct_value n v env)
-              constraints
+              full_constraints
         | None -> false))
 
 let test_exception_program ?(input = Implementation.Ints []) name program exn =
@@ -166,9 +175,6 @@ let test_arithmetic_operations =
       "0 X = (1 - 10) * 7 / (3 * 2) + 1\n"
       [ ('X', -9) ];
   ]
-
-let empty_constraints =
-  List.init 26 (fun i -> (char_of_int (i + int_of_char 'A'), 0))
 
 let test_remarks =
   [
