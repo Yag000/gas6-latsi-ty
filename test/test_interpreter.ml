@@ -7,9 +7,9 @@ let empty_constraints =
 
 let default_constraints = empty_constraints |> List.to_seq |> Hashtbl.of_seq
 
-let build_complete_constraints new_constraints =
+let build_complete_constraints constraints =
   let default_constraints_copy = Hashtbl.copy default_constraints in
-  Hashtbl.replace_seq default_constraints_copy (new_constraints |> List.to_seq);
+  Hashtbl.replace_seq default_constraints_copy (constraints |> List.to_seq);
   default_constraints_copy |> Hashtbl.to_seq |> List.of_seq
 
 let eval_str program input =
@@ -20,7 +20,7 @@ let eval_str program input =
 let eval_env_str ?(input = Implementation.Ints []) program =
   try Some (eval_str program input) with _ -> None
 
-let test_eval ?(input = Implementation.Ints []) name program new_constraints =
+let test_eval ?(input = Implementation.Ints []) name program constraints =
   let result = eval_env_str ~input program in
   test_case name `Quick (fun () ->
       check bool "eval" true
@@ -28,12 +28,11 @@ let test_eval ?(input = Implementation.Ints []) name program new_constraints =
         | Some env ->
             List.for_all
               (fun (n, v) -> Implementation.is_correct_value n v env)
-              new_constraints
+              constraints
         | None -> false))
 
-let test_eval_all ?(input = Implementation.Ints []) name program new_constraints
-    =
-  test_eval ~input name program (build_complete_constraints new_constraints)
+let test_eval_all ?(input = Implementation.Ints []) name program constraints =
+  test_eval ~input name program (build_complete_constraints constraints)
 
 let test_exception_program ?(input = Implementation.Ints []) name program exn =
   test_case name `Quick (fun () ->
