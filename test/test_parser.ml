@@ -154,6 +154,8 @@ let () =
           fail_instr_test_case "Incomplete SI" "SI";
           fail_instr_test_case "Incomplete ALORS" "ALORS";
           fail_instr_test_case "Incomplete SI ALORS" "SI ALORS";
+          fail_instr_test_case "Incomplete SI ALORS" "SI 1 = 1 ALORS";
+          fail_instr_test_case "Incomplete SI ALORS" "SI ALORS NL";
           instr_test_case "Simple SI Eq ALORS ASSIGN" "SI 1 = 2 ALORS X = 2"
             (SiAlors (Eq, Number 1, Number 2, Assign ('X', Number 2)));
           instr_test_case "Simple SI Gt ALORS ASSIGN" "SI 1 > 2 ALORS X = 2"
