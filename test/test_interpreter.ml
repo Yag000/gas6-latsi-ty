@@ -5,10 +5,10 @@ open Utils
 let empty_constraints =
   List.init 26 (fun i -> (char_of_int (i + int_of_char 'A'), 0))
 
-let default_constraints = empty_constraints |> List.to_seq |> Hashtbl.of_seq
-
 let build_complete_constraints constraints =
-  let default_constraints_copy = Hashtbl.copy default_constraints in
+  let default_constraints_copy =
+    empty_constraints |> List.to_seq |> Hashtbl.of_seq
+  in
   Hashtbl.replace_seq default_constraints_copy (constraints |> List.to_seq);
   default_constraints_copy |> Hashtbl.to_seq |> List.of_seq
 
