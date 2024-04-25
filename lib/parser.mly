@@ -20,6 +20,8 @@ open Ast
 %token RParen
 %token Rem
 %token Vavers
+%token Si
+%token Alors
 %token Entree
 %token Imprime
 %token Comma
@@ -51,10 +53,19 @@ instr:
     v=var Equal e=expression { Assign (v,e)}
     | Rem s=String { Rem s }
     | Vavers e=expression { Vavers e }
+    | Si e1=expression r=relop e2=expression Alors i=instr{ SiAlors (r, e1, e2, i) }
     | Entree l= separated_nonempty_list(Comma, var) { Entree l }
     | Imprime el=separated_nonempty_list(Comma, expr) { Imprime el }
     | Fin { Fin}
     | Nl { Nl }
+
+relop:
+    Langle { Lt }
+    | Rangle { Gt }
+    | LangleEqual { Le }
+    | RangleEqual { Ge }
+    | NotEqual { Ne }
+    | Equal { Eq }
 
 expr:
     s=String {String_ s} 

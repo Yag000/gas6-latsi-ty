@@ -2,6 +2,16 @@ open Alcotest
 open Latsi.Interpreter
 open Utils
 
+let empty_constraints =
+  List.init 26 (fun i -> (char_of_int (i + int_of_char 'A'), 0))
+
+let build_complete_constraints constraints =
+  let default_constraints_copy =
+    empty_constraints |> List.to_seq |> Hashtbl.of_seq
+  in
+  Hashtbl.replace_seq default_constraints_copy (constraints |> List.to_seq);
+  default_constraints_copy |> Hashtbl.to_seq |> List.of_seq
+
 let eval_str program input =
   let lexbuf = Lexing.from_string program in
   let ast = Latsi.Parser.input Latsi.Lexer.lexer lexbuf in
@@ -20,6 +30,9 @@ let test_eval ?(input = Implementation.Ints []) name program constraints =
               (fun (n, v) -> Implementation.is_correct_value n v env)
               constraints
         | None -> false))
+
+let test_eval_all ?(input = Implementation.Ints []) name program constraints =
+  test_eval ~input name program (build_complete_constraints constraints)
 
 let test_exception_program ?(input = Implementation.Ints []) name program exn =
   test_case name `Quick (fun () ->
@@ -167,9 +180,6 @@ let test_arithmetic_operations =
       [ ('X', -9) ];
   ]
 
-let empty_constraints =
-  List.init 26 (fun i -> (char_of_int (i + int_of_char 'A'), 0))
-
 let test_remarks =
   [
     test_eval "REM \"Hello, World\"" "0 REM \"Hello, World\"\n"
@@ -212,6 +222,140 @@ let test_vavers =
       "0 VAVERS 2\n 1 X = 1\n" Unkwown_line_number;
   ]
 
+let test_si_alors_lt =
+  [
+    test_eval "Simple SI true Lt ALORS ASSIGN" "0 SI 0 < 1 ALORS X = 200\n"
+      [ ('X', 200) ];
+    test_eval "Simple SI false Lt ALORS ASSIGN"
+      "0 SI 1 < 1 ALORS X = 200\n1 Y = 300\n"
+      [ ('Y', 300); ('X', 0) ];
+    test_eval "Simple SI true Lt ALORS VAVERS"
+      "0 SI 0 < 1 ALORS VAVERS 2\n1 X = 200\n2 Y = 300\n"
+      [ ('Y', 300); ('X', 0) ];
+    test_eval "Simple SI false Lt ALORS VAVERS"
+      "0 SI 1 < 1 ALORS VAVERS 2\n1 X = 200\n2 Y = 300\n"
+      [ ('X', 200); ('Y', 300) ];
+  ]
+
+let test_si_alors_gt =
+  [
+    test_eval "Simple SI true Gt ALORS ASSIGN" "0 SI 2 > 1 ALORS X = 200\n"
+      [ ('X', 200) ];
+    test_eval "Simple SI false Gt ALORS ASSIGN"
+      "0 SI 1 > 1 ALORS X = 200\n1 Y = 300\n"
+      [ ('Y', 300); ('X', 0) ];
+    test_eval "Simple SI true Gt ALORS VAVERS"
+      "0 SI 2 > 1 ALORS VAVERS 2\n1 X = 200\n2 Y = 300\n"
+      [ ('Y', 300); ('X', 0) ];
+    test_eval "Simple SI false Gt ALORS VAVERS"
+      "0 SI 1 > 1 ALORS VAVERS 2\n1 X = 200\n2 Y = 300\n"
+      [ ('X', 200); ('Y', 300) ];
+  ]
+
+let test_si_alors_le =
+  [
+    test_eval "Simple SI true Le ALORS ASSIGN" "0 SI 0 <= 1 ALORS X = 200\n"
+      [ ('X', 200) ];
+    test_eval "Simple SI false Le ALORS ASSIGN"
+      "0 SI 2 <= 1 ALORS X = 200\n1 Y = 300\n"
+      [ ('Y', 300); ('X', 0) ];
+    test_eval "Simple SI true Le ALORS VAVERS"
+      "0 SI 0 <= 1 ALORS VAVERS 2\n1 X = 200\n2 Y = 300\n"
+      [ ('Y', 300); ('X', 0) ];
+    test_eval "Simple SI false Le ALORS VAVERS"
+      "0 SI 2 <= 1 ALORS VAVERS 2\n1 X = 200\n2 Y = 300\n"
+      [ ('X', 200); ('Y', 300) ];
+  ]
+
+let test_si_alors_ge =
+  [
+    test_eval "Simple SI true Ge ALORS ASSIGN" "0 SI 1 >= 1 ALORS X = 200\n"
+      [ ('X', 200) ];
+    test_eval "Simple SI false Ge ALORS ASSIGN"
+      "0 SI 0 >= 1 ALORS X = 200\n1 Y = 300\n"
+      [ ('Y', 300); ('X', 0) ];
+    test_eval "Simple SI true Ge ALORS VAVERS"
+      "0 SI 1 >= 1 ALORS VAVERS 2\n1 X = 200\n2 Y = 300\n"
+      [ ('Y', 300); ('X', 0) ];
+    test_eval "Simple SI false Ge ALORS VAVERS"
+      "0 SI 0 >= 1 ALORS VAVERS 2\n1 X = 200\n2 Y = 300\n"
+      [ ('X', 200); ('Y', 300) ];
+  ]
+
+let test_si_alors_eq =
+  [
+    test_eval "Simple SI true Eq ALORS ASSIGN" "0 SI 1 = 1 ALORS X = 200\n"
+      [ ('X', 200) ];
+    test_eval "Simple SI false Eq ALORS ASSIGN"
+      "0 SI 0 = 1 ALORS X = 200\n1 Y = 300\n"
+      [ ('Y', 300); ('X', 0) ];
+    test_eval "Simple SI true Eq ALORS VAVERS"
+      "0 SI 1 = 1 ALORS VAVERS 2\n1 X = 200\n2 Y = 300\n"
+      [ ('Y', 300); ('X', 0) ];
+    test_eval "Simple SI false Eq ALORS VAVERS"
+      "0 SI 0 = 1 ALORS VAVERS 2\n1 X = 200\n2 Y = 300\n"
+      [ ('X', 200); ('Y', 300) ];
+  ]
+
+let test_si_alors_ne1 =
+  [
+    test_eval "Simple SI true Ne1 ALORS ASSIGN" "0 SI 2 <> 1 ALORS X = 200\n"
+      [ ('X', 200) ];
+    test_eval "Simple SI false Ne1 ALORS ASSIGN"
+      "0 SI 1 <> 1 ALORS X = 200\n1 Y = 300\n"
+      [ ('Y', 300); ('X', 0) ];
+    test_eval "Simple SI true Ne1 ALORS VAVERS"
+      "0 SI 2 <> 1 ALORS VAVERS 2\n1 X = 200\n2 Y = 300\n"
+      [ ('Y', 300); ('X', 0) ];
+    test_eval "Simple SI false Ne1 ALORS VAVERS"
+      "0 SI 1 <> 1 ALORS VAVERS 2\n1 X = 200\n2 Y = 300\n"
+      [ ('X', 200); ('Y', 300) ];
+  ]
+
+let test_si_alors_ne2 =
+  [
+    test_eval "Simple SI true Ne2 ALORS ASSIGN" "0 SI 2 >< 1 ALORS X = 200\n"
+      [ ('X', 200) ];
+    test_eval "Simple SI false Ne2 ALORS ASSIGN"
+      "0 SI 1 >< 1 ALORS X = 200\n1 Y = 300\n"
+      [ ('Y', 300); ('X', 0) ];
+    test_eval "Simple SI true Ne2 ALORS VAVERS"
+      "0 SI 2 >< 1 ALORS VAVERS 2\n1 X = 200\n2 Y = 300\n"
+      [ ('Y', 300); ('X', 0) ];
+    test_eval "Simple SI false Ne2 ALORS VAVERS"
+      "0 SI 1 >< 1 ALORS VAVERS 2\n1 X = 200\n2 Y = 300\n"
+      [ ('X', 200); ('Y', 300) ];
+  ]
+
+let test_si_alors_nested =
+  [
+    test_eval
+      "Nested SI true Eq ALORS [SI true Ne1 ALORS [Si true Lt ALORS ASSIGN]]; \
+       ASSIGN"
+      "0 SI 1 = 1 ALORS SI 1 <> 2 ALORS SI 1 < 2 ALORS X = 200\n 1 Y = 300\n"
+      [ ('X', 200); ('Y', 300) ];
+    test_eval
+      "Nested SI false Eq ALORS [SI true Ne1 ALORS [Si true Lt ALORS ASSIGN]]; \
+       ASSIGN"
+      "0 SI 0 = 1 ALORS SI 1 <> 2 ALORS SI 1 < 2 ALORS X = 200\n 1 Y = 300\n"
+      [ ('X', 0); ('Y', 300) ];
+    test_eval
+      "Nested SI true Eq ALORS [SI false Ne1 ALORS [Si true Lt ALORS ASSIGN]]; \
+       ASSIGN"
+      "0 SI 1 = 1 ALORS SI 2 <> 2 ALORS SI 1 < 2 ALORS X = 200\n 1 Y = 300\n"
+      [ ('X', 0); ('Y', 300) ];
+    test_eval
+      "Nested SI true Eq ALORS [SI true Ne1 ALORS [Si false Lt ALORS ASSIGN]]; \
+       ASSIGN"
+      "0 SI 1 = 1 ALORS SI 1 <> 2 ALORS SI 3 < 2 ALORS X = 200\n 1 Y = 300\n"
+      [ ('X', 0); ('Y', 300) ];
+  ]
+
+let test_si_alors =
+  test_si_alors_lt @ test_si_alors_gt @ test_si_alors_le @ test_si_alors_ge
+  @ test_si_alors_ne1 @ test_si_alors_ne2 @ test_si_alors_eq
+  @ test_si_alors_nested
+
 let test_entree =
   [
     test_eval ~input:(Implementation.Ints [ 1 ]) "ENTREE (X,1)" "0 ENTREE X\n"
@@ -241,6 +385,29 @@ let test_fin =
       [ ('X', 2) ];
   ]
 
+let test_programs =
+  [
+    test_eval_all "Simple program"
+      "5 REM \"Ce programme est formidable.\"\n\
+       10 IMPRIME \"Bonjour Paris\"\n\
+       15 NL\n\
+       20 I = 0\n\
+       30 SI I > 10 ALORS VAVERS 40\n\
+       35 IMPRIME I, \" \"\n\
+       37 I = I + 1\n\
+       39 VAVERS 30\n\
+       40 FIN\n\
+       50 IMPRIME \"ne s'imprime pas\"\n"
+      [ ('I', 11) ];
+    test_eval_all "Powers of 2"
+      "0 X = 1\n\
+       10 IMPRIME X\n\
+       20 X = X * 2\n\
+       30 SI X < 100 ALORS VAVERS 10\n\
+       40 FIN\n"
+      [ ('X', 128) ];
+  ]
+
 let () =
   run "Interpreter"
     [
@@ -258,6 +425,8 @@ let () =
       ("Remarks", test_remarks);
       ("Line execution order", test_line_order);
       ("Vavers", test_vavers);
+      ("SiAlors", test_si_alors);
       ("Entree", test_entree);
       ("Fin", test_fin);
+      ("Programs", test_programs);
     ]

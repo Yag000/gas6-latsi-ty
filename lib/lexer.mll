@@ -30,6 +30,8 @@ rule lexer = parse
         | "NL" { Nl }
         | "REM" { Rem }
         | "VAVERS" { Vavers }
+        | "SI" { Si }
+        | "ALORS" { Alors }
         | "ENTREE" { Entree }
         | ',' { Comma }
         | "IMPRIME" { Imprime }
