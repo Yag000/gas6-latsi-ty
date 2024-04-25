@@ -1,4 +1,4 @@
-(executable
- (public_name latsi)
- (name main)
- (libraries latsi))
+(executables
+ (public_names latsi latsi_extension)
+ (names latsi_main latsi_extension_main)
+ (libraries latsi latsi_extension))
