@@ -7,6 +7,11 @@ let empty_constraints =
 
 let default_constraints = empty_constraints |> List.to_seq |> Hashtbl.of_seq
 
+let build_complete_constraints new_constraints =
+  let default_constraints_copy = Hashtbl.copy default_constraints in
+  Hashtbl.replace_seq default_constraints_copy (new_constraints |> List.to_seq);
+  default_constraints_copy |> Hashtbl.to_seq |> List.of_seq
+
 let eval_str program input =
   let lexbuf = Lexing.from_string program in
   let ast = Latsi.Parser.input Latsi.Lexer.lexer lexbuf in
@@ -16,12 +21,6 @@ let eval_env_str ?(input = Implementation.Ints []) program =
   try Some (eval_str program input) with _ -> None
 
 let test_eval ?(input = Implementation.Ints []) name program new_constraints =
-  (* Build the full constraints *)
-  let default_constraints_copy = Hashtbl.copy default_constraints in
-  Hashtbl.replace_seq default_constraints_copy (new_constraints |> List.to_seq);
-  let full_constraints =
-    default_constraints_copy |> Hashtbl.to_seq |> List.of_seq
-  in
   let result = eval_env_str ~input program in
   test_case name `Quick (fun () ->
       check bool "eval" true
@@ -29,8 +28,12 @@ let test_eval ?(input = Implementation.Ints []) name program new_constraints =
         | Some env ->
             List.for_all
               (fun (n, v) -> Implementation.is_correct_value n v env)
-              full_constraints
+              new_constraints
         | None -> false))
+
+let test_eval_all ?(input = Implementation.Ints []) name program new_constraints
+    =
+  test_eval ~input name program (build_complete_constraints new_constraints)
 
 let test_exception_program ?(input = Implementation.Ints []) name program exn =
   test_case name `Quick (fun () ->
@@ -385,7 +388,7 @@ let test_fin =
 
 let test_programs =
   [
-    test_eval "Simple program"
+    test_eval_all "Simple program"
       "5 REM \"Ce programme est formidable.\"\n\
        10 IMPRIME \"Bonjour Paris\"\n\
        15 NL\n\
@@ -397,7 +400,7 @@ let test_programs =
        40 FIN\n\
        50 IMPRIME \"ne s'imprime pas\"\n"
       [ ('I', 11) ];
-    test_eval "Powers of 2"
+    test_eval_all "Powers of 2"
       "0 X = 1\n\
        10 IMPRIME X\n\
        20 X = X * 2\n\
