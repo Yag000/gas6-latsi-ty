@@ -346,6 +346,22 @@ let () =
                  String_ "prout";
                ]);
         ] );
+      ( "Sousroutine",
+        [
+          fail_instr_test_case "Empty sousroutine" "SOUSROUTINE";
+          instr_test_case "sousroutine integer" "SOUSROUTINE 1"
+            (Sousroutine (Number 1));
+          instr_test_case "sousroutine variable" "SOUSROUTINE X"
+            (Sousroutine (Var 'X'));
+          fail_instr_test_case "sousroutine string" "SOUSROUTINE \"1\"";
+          instr_test_case "sousroutine expression" "SOUSROUTINE 1 + 2"
+            (Sousroutine (Binop (Add, Number 1, Number 2)));
+        ] );
+      ( "Retourne",
+        [
+          instr_test_case "retorune" "RETOURNE" Retourne;
+          fail_instr_test_case "retorune 1" "RETOURNE 1";
+        ] );
       ("FIN", [ instr_test_case "FIN" "FIN" Fin ]);
       ("NL", [ instr_test_case "NL" "NL" Nl ]);
       ( "Line",

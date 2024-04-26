@@ -20,6 +20,8 @@ type instruction =
   | Vavers of expression
   | SiAlors of relop * expression * expression * instruction
   | Entree of variable list
+  | Sousroutine of expression
+  | Retourne
   | Fin
   | Nl
 

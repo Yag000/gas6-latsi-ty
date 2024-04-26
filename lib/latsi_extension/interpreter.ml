@@ -79,6 +79,8 @@ module Implementation = struct
         let input = read_ints input (List.length vars) in
         List.iter2 (fun var value -> Hashtbl.replace env var value) vars input;
         Next
+    | Sousroutine _ -> assert false (* TODO *)
+    | Retourne -> assert false (* TODO *)
     | Fin -> End
     | Nl ->
         print_newline ();
