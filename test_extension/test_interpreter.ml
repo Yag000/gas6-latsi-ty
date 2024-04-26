@@ -1,5 +1,5 @@
 open Alcotest
-open Latsi.Interpreter
+open Latsi_extension.Interpreter
 open Utils
 
 let empty_constraints =
@@ -14,7 +14,7 @@ let build_complete_constraints constraints =
 
 let eval_str program input =
   let lexbuf = Lexing.from_string program in
-  let ast = Latsi.Parser.input Latsi.Lexer.lexer lexbuf in
+  let ast = Latsi_extension.Parser.input Latsi_extension.Lexer.lexer lexbuf in
   Implementation.eval_env ~input ast
 
 let eval_env_str ?(input = Implementation.Ints []) program =

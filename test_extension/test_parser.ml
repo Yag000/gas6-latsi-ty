@@ -1,11 +1,11 @@
-open Latsi.Ast
+open Latsi_extension.Ast
 open Utils
 open Alcotest
 
 let parse s =
   try
     let lexbuf = Lexing.from_string s in
-    Some (Latsi.Parser.input Latsi.Lexer.lexer lexbuf)
+    Some (Latsi_extension.Parser.input Latsi_extension.Lexer.lexer lexbuf)
   with _ -> None
 
 let program_test_case name s expected =
