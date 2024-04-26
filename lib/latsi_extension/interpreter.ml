@@ -53,6 +53,8 @@ module Implementation = struct
 
   type instruction_result = Next | Jump of int | End
 
+  let eval_assign (v, e) env = Hashtbl.replace env v (eval_expression env e)
+
   let rec eval_instruction env input = function
     | Imprime el ->
         List.iter
@@ -62,9 +64,8 @@ module Implementation = struct
           el;
         Next
     | Rem _ -> Next
-    | Assign (x, e) ->
-        let vx = eval_expression env e in
-        Hashtbl.replace env x vx;
+    | MultiAssign l ->
+        List.iter (fun a -> eval_assign a env) l;
         Next
     | Vavers e ->
         let index = eval_expression env e in
