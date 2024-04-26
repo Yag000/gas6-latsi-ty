@@ -15,6 +15,7 @@ type assign = variable * expression
 
 type instruction =
   | Imprime of expr list
+  | Assign of assign
   | MultiAssign of assign list
   | Rem of string
   | Vavers of expression

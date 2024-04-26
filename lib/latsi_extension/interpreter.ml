@@ -64,6 +64,9 @@ module Implementation = struct
           el;
         Next
     | Rem _ -> Next
+    | Assign a ->
+        eval_assign a env;
+        Next
     | MultiAssign l ->
         List.iter (fun a -> eval_assign a env) l;
         Next
