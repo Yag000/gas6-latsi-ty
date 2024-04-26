@@ -1,5 +1,5 @@
-open Latsi_extension.Lexer
 open Latsi_extension.Parser
+open Latsi_extension.Lexer
 open Utils
 
 let generate_token_list (str : string) =
@@ -271,6 +271,24 @@ let test_alors_tokenization =
     test_UnknownToken_exception "Alors";
   ]
 
+let test_sousroutine_tokenization =
+  [
+    test_token_lists "test_sousroutine_tokenization"
+      ("SOUSROUTINE" |> generate_token_list)
+      [ Sousroutine ];
+    test_UnknownToken_exception "sousroutine";
+    test_UnknownToken_exception "Sousroutine";
+  ]
+
+let test_retourne_tokenization =
+  [
+    test_token_lists "test_retourne_tokenization"
+      ("RETOURNE" |> generate_token_list)
+      [ Retourne ];
+    test_UnknownToken_exception "retourne";
+    test_UnknownToken_exception "Retourne";
+  ]
+
 let () =
   let open Alcotest in
   run "Lexer_tests"
@@ -303,7 +321,7 @@ let () =
         @ test_entree_tokenization @ test_comma_tokenization
         @ test_imprime_tokenization @ test_fin_tokenization
         @ test_nl_tokenization @ test_si_tokenization @ test_alors_tokenization
-      );
+        @ test_sousroutine_tokenization @ test_retourne_tokenization );
       ( "test_illegal_tokenization",
         [
           QCheck_alcotest.to_alcotest test_invalid_number_float;

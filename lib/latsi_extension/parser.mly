@@ -24,6 +24,8 @@ open Ast
 %token Alors
 %token Entree
 %token Imprime
+%token Sousroutine 
+%token Retourne
 %token Comma
 %token Fin
 %token Nl
