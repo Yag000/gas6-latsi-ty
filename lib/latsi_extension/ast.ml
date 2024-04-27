@@ -91,7 +91,7 @@ let pp_relop ff = function
   | Ne -> Format.fprintf ff "<>"
   | Eq -> Format.fprintf ff "="
 
-let pp_assign ff (v, e) = Format.fprintf ff "%c = %a" v pp_expression e
+let pp_assign ff (v, e) = Format.fprintf ff "Assign: %c = %a" v pp_expression e
 
 let rec pp_instruction ff = function
   | Imprime el ->
@@ -100,7 +100,7 @@ let rec pp_instruction ff = function
         el
   | Assign a -> pp_assign ff a
   | MultiAssign l ->
-      Format.fprintf ff "@[<hov>%a@]"
+      Format.fprintf ff "MultiAssign: @[<hov>%a@]"
         Format.(
           pp_print_list ~pp_sep:(fun out () -> fprintf out ",@ ") pp_assign)
         l
