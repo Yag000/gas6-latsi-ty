@@ -29,103 +29,123 @@ let () =
     [
       ( "Assign",
         [
-          instr_test_case "simple integer" "X = 1" (Assign ('X', Number 1));
+          instr_test_case "simple integer" "X = 1"
+            (MultiAssign [ ('X', Number 1) ]);
           fail_instr_test_case "invalid variable" "x = 1";
           fail_instr_test_case "assigning a string" "X = \"1\"";
-          instr_test_case "X = Y" "X = Y" (Assign ('X', Var 'Y'));
-          instr_test_case "X = X" "X = X" (Assign ('X', Var 'X'));
+          instr_test_case "X = Y" "X = Y" (MultiAssign [ ('X', Var 'Y') ]);
+          instr_test_case "X = X" "X = X" (MultiAssign [ ('X', Var 'X') ]);
         ] );
       ( "Unary operations",
         [
           instr_test_case "positive integer alone" "X = +1"
-            (Assign ('X', Unop (Pos, Number 1)));
+            (MultiAssign [ ('X', Unop (Pos, Number 1)) ]);
           instr_test_case "negative integer alone" "X = -1"
-            (Assign ('X', Unop (Neg, Number 1)));
+            (MultiAssign [ ('X', Unop (Neg, Number 1)) ]);
         ] );
       ( "Sum",
         [
-          instr_test_case "simple integer" "X = 1" (Assign ('X', Number 1));
+          instr_test_case "simple integer" "X = 1"
+            (MultiAssign [ ('X', Number 1) ]);
           instr_test_case "assign with expression" "X = 1 + 2"
-            (Assign ('X', Binop (Add, Number 1, Number 2)));
+            (MultiAssign [ ('X', Binop (Add, Number 1, Number 2)) ]);
           instr_test_case "assign with expression" "X = 1 + 2 + 3"
-            (Assign ('X', Binop (Add, Binop (Add, Number 1, Number 2), Number 3)));
+            (MultiAssign
+               [ ('X', Binop (Add, Binop (Add, Number 1, Number 2), Number 3)) ]);
         ] );
       ( "Sub",
         [
           instr_test_case "assign with expression" "X = 1 - 2"
-            (Assign ('X', Binop (Sub, Number 1, Number 2)));
+            (MultiAssign [ ('X', Binop (Sub, Number 1, Number 2)) ]);
           instr_test_case "assign with expression" "X = 1 - 2 - 3"
-            (Assign ('X', Binop (Sub, Binop (Sub, Number 1, Number 2), Number 3)));
+            (MultiAssign
+               [ ('X', Binop (Sub, Binop (Sub, Number 1, Number 2), Number 3)) ]);
         ] );
       ( "Mul",
         [
           instr_test_case "assign with expression" "X = 1 * 2"
-            (Assign ('X', Binop (Mul, Number 1, Number 2)));
+            (MultiAssign [ ('X', Binop (Mul, Number 1, Number 2)) ]);
           instr_test_case "assign with expression" "X = 1 * 2 * 3"
-            (Assign ('X', Binop (Mul, Binop (Mul, Number 1, Number 2), Number 3)));
+            (MultiAssign
+               [ ('X', Binop (Mul, Binop (Mul, Number 1, Number 2), Number 3)) ]);
         ] );
       ( "Div",
         [
           instr_test_case "assign with expression" "X = 1 / 2"
-            (Assign ('X', Binop (Div, Number 1, Number 2)));
+            (MultiAssign [ ('X', Binop (Div, Number 1, Number 2)) ]);
           instr_test_case "assign with expression" "X = 1 / 2 / 3"
-            (Assign ('X', Binop (Div, Binop (Div, Number 1, Number 2), Number 3)));
+            (MultiAssign
+               [ ('X', Binop (Div, Binop (Div, Number 1, Number 2), Number 3)) ]);
         ] );
       ( "Integer operations precedence",
         [
           instr_test_case "assign with expression" "X = 1 + 2 * 3"
-            (Assign ('X', Binop (Add, Number 1, Binop (Mul, Number 2, Number 3))));
+            (MultiAssign
+               [ ('X', Binop (Add, Number 1, Binop (Mul, Number 2, Number 3))) ]);
           instr_test_case "assign with expression" "X = 1 * 2 + 3"
-            (Assign ('X', Binop (Add, Binop (Mul, Number 1, Number 2), Number 3)));
+            (MultiAssign
+               [ ('X', Binop (Add, Binop (Mul, Number 1, Number 2), Number 3)) ]);
           instr_test_case "assign with expression" "X = 1 * 2 + 3 * 4"
-            (Assign
-               ( 'X',
-                 Binop
-                   ( Add,
-                     Binop (Mul, Number 1, Number 2),
-                     Binop (Mul, Number 3, Number 4) ) ));
+            (MultiAssign
+               [
+                 ( 'X',
+                   Binop
+                     ( Add,
+                       Binop (Mul, Number 1, Number 2),
+                       Binop (Mul, Number 3, Number 4) ) );
+               ]);
           instr_test_case "assign with expression" "X = 1 + 2 * 3 + 4"
-            (Assign
-               ( 'X',
-                 Binop
-                   ( Add,
-                     Binop (Add, Number 1, Binop (Mul, Number 2, Number 3)),
-                     Number 4 ) ));
+            (MultiAssign
+               [
+                 ( 'X',
+                   Binop
+                     ( Add,
+                       Binop (Add, Number 1, Binop (Mul, Number 2, Number 3)),
+                       Number 4 ) );
+               ]);
         ] );
       ( "Parenthesis in binary operations",
         [
           instr_test_case "assign with expression" "X = (1 + 2) * 3"
-            (Assign ('X', Binop (Mul, Binop (Add, Number 1, Number 2), Number 3)));
+            (MultiAssign
+               [ ('X', Binop (Mul, Binop (Add, Number 1, Number 2), Number 3)) ]);
           instr_test_case "assign with expression" "X = 1 * (2 + 3)"
-            (Assign ('X', Binop (Mul, Number 1, Binop (Add, Number 2, Number 3))));
+            (MultiAssign
+               [ ('X', Binop (Mul, Number 1, Binop (Add, Number 2, Number 3))) ]);
           instr_test_case "assign with expression" "X = (1 + 2) * (3 + 4)"
-            (Assign
-               ( 'X',
-                 Binop
-                   ( Mul,
-                     Binop (Add, Number 1, Number 2),
-                     Binop (Add, Number 3, Number 4) ) ));
+            (MultiAssign
+               [
+                 ( 'X',
+                   Binop
+                     ( Mul,
+                       Binop (Add, Number 1, Number 2),
+                       Binop (Add, Number 3, Number 4) ) );
+               ]);
           instr_test_case "assign with expression" "X = (1 + 2) * 3 + 4"
-            (Assign
-               ( 'X',
-                 Binop
-                   ( Add,
-                     Binop (Mul, Binop (Add, Number 1, Number 2), Number 3),
-                     Number 4 ) ));
+            (MultiAssign
+               [
+                 ( 'X',
+                   Binop
+                     ( Add,
+                       Binop (Mul, Binop (Add, Number 1, Number 2), Number 3),
+                       Number 4 ) );
+               ]);
           instr_test_case "assign with expression" "X = 1 + (2 * 3) + 4"
-            (Assign
-               ( 'X',
-                 Binop
-                   ( Add,
-                     Binop (Add, Number 1, Binop (Mul, Number 2, Number 3)),
-                     Number 4 ) ));
+            (MultiAssign
+               [
+                 ( 'X',
+                   Binop
+                     ( Add,
+                       Binop (Add, Number 1, Binop (Mul, Number 2, Number 3)),
+                       Number 4 ) );
+               ]);
         ] );
       ( "Parenthesis in unary operations",
         [
           instr_test_case "assign with expression" "X = -(1 + 2)"
-            (Assign ('X', Unop (Neg, Binop (Add, Number 1, Number 2))));
+            (MultiAssign [ ('X', Unop (Neg, Binop (Add, Number 1, Number 2))) ]);
           instr_test_case "assign with expression" "X = +(1 + 2)"
-            (Assign ('X', Unop (Pos, Binop (Add, Number 1, Number 2))));
+            (MultiAssign [ ('X', Unop (Pos, Binop (Add, Number 1, Number 2))) ]);
         ] );
       ( "REM",
         [
@@ -156,27 +176,36 @@ let () =
           fail_instr_test_case "Incomplete SI ALORS" "SI ALORS";
           fail_instr_test_case "Incomplete SI ALORS" "SI 1 = 1 ALORS";
           fail_instr_test_case "Incomplete SI ALORS" "SI ALORS NL";
-          instr_test_case "Simple SI Eq ALORS ASSIGN" "SI 1 = 2 ALORS X = 2"
-            (SiAlors (Eq, Number 1, Number 2, Assign ('X', Number 2)));
-          instr_test_case "Simple SI Gt ALORS ASSIGN" "SI 1 > 2 ALORS X = 2"
-            (SiAlors (Gt, Number 1, Number 2, Assign ('X', Number 2)));
-          instr_test_case "Simple SI Ge ALORS ASSIGN" "SI 1 >= 2 ALORS X = 2"
-            (SiAlors (Ge, Number 1, Number 2, Assign ('X', Number 2)));
-          instr_test_case "Simple SI Lt ALORS ASSIGN" "SI 1 < 2 ALORS X = 2"
-            (SiAlors (Lt, Number 1, Number 2, Assign ('X', Number 2)));
-          instr_test_case "Simple SI Le ALORS ASSIGN" "SI 1 <= 2 ALORS X = 2"
-            (SiAlors (Le, Number 1, Number 2, Assign ('X', Number 2)));
-          instr_test_case "Simple SI Ne1 ALORS ASSIGN" "SI 1 <> 2 ALORS X = 2"
-            (SiAlors (Ne, Number 1, Number 2, Assign ('X', Number 2)));
-          instr_test_case "Simple SI Ne2 ALORS ASSIGN" "SI 1 >< 2 ALORS X = 2"
-            (SiAlors (Ne, Number 1, Number 2, Assign ('X', Number 2)));
+          instr_test_case "Simple SI Eq ALORS MULTIASSIGN"
+            "SI 1 = 2 ALORS X = 2"
+            (SiAlors (Eq, Number 1, Number 2, MultiAssign [ ('X', Number 2) ]));
+          instr_test_case "Simple SI Gt ALORS MULTIASSIGN"
+            "SI 1 > 2 ALORS X = 2"
+            (SiAlors (Gt, Number 1, Number 2, MultiAssign [ ('X', Number 2) ]));
+          instr_test_case "Simple SI Ge ALORS MULTIASSIGN"
+            "SI 1 >= 2 ALORS X = 2"
+            (SiAlors (Ge, Number 1, Number 2, MultiAssign [ ('X', Number 2) ]));
+          instr_test_case "Simple SI Lt ALORS MULTIASSIGN"
+            "SI 1 < 2 ALORS X = 2"
+            (SiAlors (Lt, Number 1, Number 2, MultiAssign [ ('X', Number 2) ]));
+          instr_test_case "Simple SI Le ALORS MULTIASSIGN"
+            "SI 1 <= 2 ALORS X = 2"
+            (SiAlors (Le, Number 1, Number 2, MultiAssign [ ('X', Number 2) ]));
+          instr_test_case "Simple SI Ne1 ALORS MULTIASSIGN"
+            "SI 1 <> 2 ALORS X = 2"
+            (SiAlors (Ne, Number 1, Number 2, MultiAssign [ ('X', Number 2) ]));
+          instr_test_case "Simple SI Ne2 ALORS MULTIASSIGN"
+            "SI 1 >< 2 ALORS X = 2"
+            (SiAlors (Ne, Number 1, Number 2, MultiAssign [ ('X', Number 2) ]));
           instr_test_case "Nested SI Le ALORS [SI Ne ALORS ASSIGN]"
             "SI -1 <= 1 ALORS SI 1 <> 2 ALORS X = 200"
             (SiAlors
                ( Le,
                  Unop (Neg, Number 1),
                  Number 1,
-                 SiAlors (Ne, Number 1, Number 2, Assign ('X', Number 200)) ));
+                 SiAlors
+                   (Ne, Number 1, Number 2, MultiAssign [ ('X', Number 200) ])
+               ));
           instr_test_case "Simple SI Eq ALORS VAVERS" "SI 1 = 2 ALORS VAVERS 2"
             (SiAlors (Eq, Number 1, Number 2, Vavers (Number 2)));
           instr_test_case "Simple SI Gt ALORS VAVERS" "SI 1 > 2 ALORS VAVERS 2"
@@ -254,12 +283,12 @@ let () =
         [
           program_test_case "non CR terminated line" "0 X = 1" None;
           program_test_case "CR terminated line" "0 X = 1 \n"
-            (Some [ { number = 0; instr = Assign ('X', Number 1) } ]);
+            (Some [ { number = 0; instr = MultiAssign [ ('X', Number 1) ] } ]);
           program_test_case "Nultiple lines" "0 X = 1\n 10 Y = 2\n"
             (Some
                [
-                 { number = 0; instr = Assign ('X', Number 1) };
-                 { number = 10; instr = Assign ('Y', Number 2) };
+                 { number = 0; instr = MultiAssign [ ('X', Number 1) ] };
+                 { number = 10; instr = MultiAssign [ ('Y', Number 2) ] };
                ]);
         ] );
       ("Program", [ program_test_case "empty program" "" (Some []) ]);
