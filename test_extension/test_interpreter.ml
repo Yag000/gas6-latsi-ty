@@ -387,6 +387,59 @@ let test_entree =
       [ ('X', 3); ('Y', 4) ];
   ]
 
+let test_sousroutines =
+  [
+    test_eval_fail "Retourne without subroutine" "0 RETOURNE\n";
+    test_eval "SOUSROUTINE 3; X = 1; FIN; Y=1; RETOURNE; X=2"
+      "0 SOUSROUTINE 3\n 1 X = 1\n 2 FIN\n 3 Y = 1\n 4 RETOURNE\n 5 X = 2\n"
+      [ ('X', 1); ('Y', 1) ];
+    test_eval "Nested sousroutines"
+      "0 SOUSROUTINE 4\n\
+       1 X = 1\n\
+       2 FIN\n\
+       3 O = 1\n\
+       4 Y = 1\n\
+       5 SOUSROUTINE 8\n\
+       6 Z = 2\n\
+       7 RETOURNE\n\
+       8 P = 3\n\
+       9 RETOURNE\n"
+      [ ('X', 1); ('Z', 2); ('Y', 1); ('P', 3); ('O', 0) ];
+    test_eval "Recoursive sousroutine"
+      " 0 X = 10 \n\
+       1 Y = 1 \n\
+       2 SOUSROUTINE 100 \n\
+       3 FIN \n\
+       100 SI X <= 0 ALORS RETOURNE\n\
+       101 Y = Y * 2\n\
+       102 X = X - 1\n\
+       103 SOUSROUTINE 100\n\
+       104 RETOURNE\n"
+      [ ('Y', 1 lsl 10) ];
+    test_eval "Conditional sousroutine"
+      " 0 X = 10 \n\
+       1 Y = 1 \n\
+       2 SI X > 1 ALORS SOUSROUTINE 100 \n\
+       3 FIN \n\
+       100 SI X <= 0 ALORS RETOURNE\n\
+       101 Y = Y * 2\n\
+       102 X = X - 1\n\
+       103 SOUSROUTINE 100\n\
+       104 RETOURNE\n"
+      [ ('Y', 1 lsl 10) ];
+    test_eval "Conditional sousroutine 2"
+      " 0 X = 10 \n\
+       1 Y = 1 \n\
+       2 SI X < 1 ALORS SOUSROUTINE 100 \n\
+       3 FIN \n\
+       100 SI X <= 0 ALORS RETOURNE\n\
+       101 Y = Y * 2\n\
+       102 X = X - 1\n\
+       103 SOUSROUTINE 100\n\
+       104 RETOURNE\n"
+      [ ('Y', 1); ('X', 10) ];
+  ]
+
 let test_fin =
   [
     test_eval "FIN" "0 FIN\n" empty_constraints;
@@ -441,6 +494,7 @@ let () =
       ("Vavers", test_vavers);
       ("SiAlors", test_si_alors);
       ("Entree", test_entree);
+      ("Sousroutines", test_sousroutines);
       ("Fin", test_fin);
       ("Programs", test_programs);
     ]

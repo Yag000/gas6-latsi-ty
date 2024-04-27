@@ -2,6 +2,7 @@ open Ast
 
 exception Empty_program
 exception Unkwown_line_number
+exception Illegal_return
 
 module Implementation = struct
   type env = (char, int) Hashtbl.t
@@ -51,7 +52,12 @@ module Implementation = struct
           assert false
         else l
 
-  type instruction_result = Next | Jump of int | End
+  type instruction_result =
+    | Next
+    | Jump of int
+    | End
+    | Sousroutine_start of int
+    | Return
 
   let eval_assign (v, e) env = Hashtbl.replace env v (eval_expression env e)
 
@@ -79,14 +85,14 @@ module Implementation = struct
         let input = read_ints input (List.length vars) in
         List.iter2 (fun var value -> Hashtbl.replace env var value) vars input;
         Next
-    | Sousroutine _ -> assert false (* TODO *)
-    | Retourne -> assert false (* TODO *)
+    | Sousroutine e -> Sousroutine_start (eval_expression env e)
+    | Retourne -> Return
     | Fin -> End
     | Nl ->
         print_newline ();
         Next
 
-  let rec eval_program env cur program input =
+  let rec eval_program env cur stack program input =
     match cur with
     | None -> ()
     | Some cur -> (
@@ -94,9 +100,17 @@ module Implementation = struct
         | None -> raise Unkwown_line_number
         | Some (instr, next) -> (
             match eval_instruction env input instr with
-            | Next -> eval_program env next program input
-            | Jump next -> eval_program env (Some next) program input
-            | End -> ()))
+            | Next -> eval_program env next stack program input
+            | Jump next -> eval_program env (Some next) stack program input
+            | End -> ()
+            | Sousroutine_start jump ->
+                eval_program env (Some jump) (next :: stack) program input
+            | Return -> (
+                match stack with
+                | [] -> raise Illegal_return
+                | Some next :: stack ->
+                    eval_program env (Some next) stack program input
+                | None :: _ -> ())))
 
   let eval_env ?(input = Stdin) program =
     match program with
@@ -136,7 +150,7 @@ module Implementation = struct
         in
 
         (* Evaluate the program *)
-        eval_program env start program_intrs input;
+        eval_program env start [] program_intrs input;
         env
 
   let value_of var env = Hashtbl.find env var
