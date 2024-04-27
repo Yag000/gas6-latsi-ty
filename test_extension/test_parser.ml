@@ -36,6 +36,19 @@ let () =
           instr_test_case "X = Y" "X = Y" (MultiAssign [ ('X', Var 'Y') ]);
           instr_test_case "X = X" "X = X" (MultiAssign [ ('X', Var 'X') ]);
         ] );
+      ( "MultiAssign",
+        [
+          instr_test_case "2 integers" "X = 1, Y = 2"
+            (MultiAssign [ ('X', Number 1); ('Y', Number 2) ]);
+          fail_instr_test_case "one invalid variable" "x = 1, Y = 2";
+          fail_instr_test_case "one assigning a string" "X = \"1\", Y = 2";
+          fail_instr_test_case "invalid variables" "x = 1, y = 2";
+          fail_instr_test_case "assigning strings" "X = \"1\", Y = \"2\"";
+          instr_test_case "X = Y, Y = X" "X = Y, Y = X"
+            (MultiAssign [ ('X', Var 'Y'); ('Y', Var 'X') ]);
+          instr_test_case "X = X, Y = Y" "X = X, Y = Y"
+            (MultiAssign [ ('X', Var 'X'); ('Y', Var 'Y') ]);
+        ] );
       ( "Unary operations",
         [
           instr_test_case "positive integer alone" "X = +1"
