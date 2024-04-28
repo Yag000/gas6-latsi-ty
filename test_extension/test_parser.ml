@@ -43,6 +43,52 @@ let () =
         [
           instr_test_case "2 integers" "X = 1, Y = 2"
             (MultiAssign [ ('X', Number 1); ('Y', Number 2) ]);
+          instr_test_case "3 integers" "X = 1, Y = 2, Z = 3"
+            (MultiAssign [ ('X', Number 1); ('Y', Number 2); ('Z', Number 3) ]);
+          instr_test_case "4 integers" "A = 1, B = 2, C = 3, D = 4"
+            (MultiAssign
+               [
+                 ('A', Number 1);
+                 ('B', Number 2);
+                 ('C', Number 3);
+                 ('D', Number 4);
+               ]);
+          instr_test_case "26 integers"
+            "A = 1, B = 2, C = 3, D = 4, E = 5, F = 6, G = 7, H = 8, I = 9, J \
+             = 10, K = 11, L = 12, M = 13, N = 14, O = 15, P = 16, Q = 17, R = \
+             18, S = 19, T = 20, U = 21, V = 22, W = 23, X = 24, Y = 25, Z = \
+             26"
+            (MultiAssign
+               [
+                 ('A', Number 1);
+                 ('B', Number 2);
+                 ('C', Number 3);
+                 ('D', Number 4);
+                 ('E', Number 5);
+                 ('F', Number 6);
+                 ('G', Number 7);
+                 ('H', Number 8);
+                 ('I', Number 9);
+                 ('J', Number 10);
+                 ('K', Number 11);
+                 ('L', Number 12);
+                 ('M', Number 13);
+                 ('N', Number 14);
+                 ('O', Number 15);
+                 ('P', Number 16);
+                 ('Q', Number 17);
+                 ('R', Number 18);
+                 ('S', Number 19);
+                 ('T', Number 20);
+                 ('U', Number 21);
+                 ('V', Number 22);
+                 ('W', Number 23);
+                 ('X', Number 24);
+                 ('Y', Number 25);
+                 ('Z', Number 26);
+               ]);
+          instr_test_case "Same variable appears" "X = 1, X = 2, Y = 3"
+            (MultiAssign [ ('X', Number 1); ('X', Number 2); ('Y', Number 3) ]);
           fail_instr_test_case "Missing 1st Var" "= 1, Y = 2";
           fail_instr_test_case "Missing 1st relop" "X 1, Y = 2";
           fail_instr_test_case "Missing 1st expression" "X =, Y = 2";
