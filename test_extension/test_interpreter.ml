@@ -89,6 +89,19 @@ let test_var_assignment =
     QCheck_alcotest.to_alcotest qtest_assigment_one_variable;
   ]
 
+let test_var_multi_assignment =
+  [
+    test_eval "X = 1, Y = 2, Z = 3" "0 X = 1, Y = 2, Z = 3\n"
+      [ ('X', 1); ('Y', 2); ('Z', 3) ];
+    test_eval "X = 1, Y = 2, Z = 3, X = 4" "0 X = 1, Y = 2, Z = 3, X = 4\n"
+      [ ('X', 4); ('Y', 2); ('Z', 3) ];
+    test_eval "X = 1, Y = 2, Z = X + Y" "0 X = 1, Y = 2, Z = X + Y\n"
+      [ ('X', 1); ('Y', 2); ('Z', 3) ];
+    test_eval "X = 1, Y = 2, Z = X + Y, Z = Z + X + Y, X = 0"
+      "0 X = 1, Y = 2, Z = X + Y, Z = Z + X + Y, X = 0\n"
+      [ ('X', 0); ('Y', 2); ('Z', 6) ];
+  ]
+
 let test_addition =
   [
     test_eval "X = 1 + 2" "0 X = 1 + 2\n" [ ('X', 3) ];
@@ -413,6 +426,7 @@ let () =
     [
       ("Empty program", [ test_empty_program "" ]);
       ("Variable assignment", test_var_assignment);
+      ("Variable multi assignment", test_var_multi_assignment);
       ("Addition", test_addition);
       ("Substraction", test_substraction);
       ("Multiplication", test_multiplication);
