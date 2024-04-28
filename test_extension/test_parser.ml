@@ -29,6 +29,7 @@ let () =
     [
       ( "Assign",
         [
+          fail_instr_test_case "invalid variable" "x = 1";
           fail_instr_test_case "incomplete assign 1" "=";
           fail_instr_test_case "incomplete assign 2" "x =";
           fail_instr_test_case "incomplete assign 3" "= 1";
