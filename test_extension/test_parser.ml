@@ -42,6 +42,13 @@ let () =
         [
           instr_test_case "2 integers" "X = 1, Y = 2"
             (MultiAssign [ ('X', Number 1); ('Y', Number 2) ]);
+          fail_instr_test_case "Missing 1st Var" "= 1, Y = 2";
+          fail_instr_test_case "Missing 1st relop" "X 1, Y = 2";
+          fail_instr_test_case "Missing 1st expression" "X =, Y = 2";
+          fail_instr_test_case "Missing comma separator" "X = 1 Y = 2";
+          fail_instr_test_case "Missing 2nd Var" "X = 1, = 2";
+          fail_instr_test_case "Missing 2nd relop" "X = 1, Y 2";
+          fail_instr_test_case "Missing 2nd expression" "X = 1, Y = ";
           fail_instr_test_case "one invalid variable" "x = 1, Y = 2";
           fail_instr_test_case "one assigning a string" "X = \"1\", Y = 2";
           fail_instr_test_case "invalid variables" "x = 1, y = 2";
