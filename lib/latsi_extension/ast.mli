@@ -11,10 +11,11 @@ and expression =
   | Number of int
 
 type expr = String_ of string | Expression of expression
+type assign = variable * expression
 
 type instruction =
   | Imprime of expr list
-  | Assign of variable * expression
+  | MultiAssign of assign list
   | Rem of string
   | Vavers of expression
   | SiAlors of relop * expression * expression * instruction

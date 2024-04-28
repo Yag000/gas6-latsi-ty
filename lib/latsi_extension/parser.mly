@@ -49,8 +49,11 @@ line:
     n=Nat i=instr CR { 
         {number = n; instr = i} }
 
+assign:
+    p=separated_pair(Var, Equal, expression) { p }
+
 instr:
-    v=var Equal e=expression { Assign (v,e)}
+    l=separated_nonempty_list(Comma, assign) { MultiAssign l }
     | Rem s=String { Rem s }
     | Vavers e=expression { Vavers e }
     | Si e1=expression r=relop e2=expression Alors i=instr{ SiAlors (r, e1, e2, i) }

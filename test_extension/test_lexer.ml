@@ -1,5 +1,5 @@
-open Latsi.Lexer
-open Latsi.Parser
+open Latsi_extension.Lexer
+open Latsi_extension.Parser
 open Utils
 
 let generate_token_list (str : string) =

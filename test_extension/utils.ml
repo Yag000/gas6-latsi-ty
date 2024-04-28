@@ -1,6 +1,6 @@
-open Latsi.Parser
-open Latsi.Token
-open Latsi.Ast
+open Latsi_extension.Parser
+open Latsi_extension.Token
+open Latsi_extension.Ast
 open Alcotest
 
 let join_char_list (l : char list) =

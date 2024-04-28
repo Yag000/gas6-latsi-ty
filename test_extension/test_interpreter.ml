@@ -1,5 +1,5 @@
 open Alcotest
-open Latsi.Interpreter
+open Latsi_extension.Interpreter
 open Utils
 
 let empty_constraints =
@@ -14,7 +14,7 @@ let build_complete_constraints constraints =
 
 let eval_str program input =
   let lexbuf = Lexing.from_string program in
-  let ast = Latsi.Parser.input Latsi.Lexer.lexer lexbuf in
+  let ast = Latsi_extension.Parser.input Latsi_extension.Lexer.lexer lexbuf in
   Implementation.eval_env ~input ast
 
 let eval_env_str ?(input = Implementation.Ints []) program =
@@ -87,6 +87,19 @@ let test_var_assignment =
     test_eval "X = 1; Y = 10 ; X = 9" "0 X = 1\n 10 Y = 10\n 20 X = 9\n"
       [ ('X', 9); ('Y', 10) ];
     QCheck_alcotest.to_alcotest qtest_assigment_one_variable;
+  ]
+
+let test_var_multi_assignment =
+  [
+    test_eval "X = 1, Y = 2, Z = 3" "0 X = 1, Y = 2, Z = 3\n"
+      [ ('X', 1); ('Y', 2); ('Z', 3) ];
+    test_eval "X = 1, Y = 2, Z = 3, X = 4" "0 X = 1, Y = 2, Z = 3, X = 4\n"
+      [ ('X', 4); ('Y', 2); ('Z', 3) ];
+    test_eval "X = 1, Y = 2, Z = X + Y" "0 X = 1, Y = 2, Z = X + Y\n"
+      [ ('X', 1); ('Y', 2); ('Z', 3) ];
+    test_eval "X = 1, Y = 2, Z = X + Y, Z = Z + X + Y, X = 0"
+      "0 X = 1, Y = 2, Z = X + Y, Z = Z + X + Y, X = 0\n"
+      [ ('X', 0); ('Y', 2); ('Z', 6) ];
   ]
 
 let test_addition =
@@ -413,6 +426,7 @@ let () =
     [
       ("Empty program", [ test_empty_program "" ]);
       ("Variable assignment", test_var_assignment);
+      ("Variable multi assignment", test_var_multi_assignment);
       ("Addition", test_addition);
       ("Substraction", test_substraction);
       ("Multiplication", test_multiplication);
