@@ -49,6 +49,6 @@ let generator_number =
 let arbitrary_number =
   QCheck.make ~print:(Format.asprintf "%a" pp_expression) generator_number
 
-let generator_assing =
+let generator_assign =
   let open QCheck in
   pair arbitrary_var arbitrary_number
