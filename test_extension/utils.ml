@@ -41,3 +41,14 @@ let pp_token_list ff (tl : token list) = pp_list ff tl pp_token
 
 let program_testable =
   testable (Fmt.of_to_string (Format.asprintf "%a" pp_program)) equal_program
+
+let generator_number =
+  let open QCheck in
+  Gen.map (fun n -> Number n) (Gen.int_range 0 100)
+
+let arbitrary_number =
+  QCheck.make ~print:(Format.asprintf "%a" pp_expression) generator_number
+
+let generator_assing =
+  let open QCheck in
+  pair arbitrary_var arbitrary_number

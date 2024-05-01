@@ -30,3 +30,4 @@ type program = line list
 
 val equal_program : program -> program -> bool
 val pp_program : Format.formatter -> program -> unit
+val pp_expression : Format.formatter -> expression -> unit

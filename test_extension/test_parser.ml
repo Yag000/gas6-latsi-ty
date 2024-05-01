@@ -24,6 +24,24 @@ let fail_instr_test_case name s = option_instr_test_case name s None
 let instr_test_case name s expected =
   option_instr_test_case name s (Some expected)
 
+let parse_correct_multi_assing_qcheck =
+  let open QCheck in
+  Test.make ~count:500 ~name:"parse correct multi assign"
+    (list (pair arbitrary_var (int_range 0 1000)))
+    (fun l ->
+      assume (List.length l > 0);
+      let s =
+        String.concat ", "
+          (List.map (fun (v, i) -> Printf.sprintf "%c = %d" v i) l)
+      in
+      let s = Printf.sprintf "0 %s\n" s in
+      let expected_list = List.map (fun (v, i) -> (v, Number i)) l in
+      let expected =
+        Some [ { number = 0; instr = MultiAssign expected_list } ]
+      in
+      let actual = parse s in
+      expected = actual)
+
 let () =
   run "Parser"
     [
@@ -104,6 +122,7 @@ let () =
             (MultiAssign [ ('X', Var 'Y'); ('Y', Var 'X') ]);
           instr_test_case "X = X, Y = Y" "X = X, Y = Y"
             (MultiAssign [ ('X', Var 'X'); ('Y', Var 'Y') ]);
+          QCheck_alcotest.to_alcotest parse_correct_multi_assing_qcheck;
         ] );
       ( "Unary operations",
         [
