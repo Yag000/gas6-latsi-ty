@@ -70,7 +70,7 @@ module Implementation = struct
           el;
         Next
     | Rem _ -> Next
-    | MultiAssign l ->
+    | Assign l ->
         List.iter (fun a -> eval_assign a env) l;
         Next
     | Vavers e ->

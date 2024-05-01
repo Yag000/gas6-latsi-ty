@@ -15,7 +15,7 @@ type assign = variable * expression
 
 type instruction =
   | Imprime of expr list
-  | MultiAssign of assign list
+  | Assign of assign list
   | Rem of string (* TODO: Add remaining constructors *)
   | Vavers of expression
   | SiAlors of relop * expression * expression * instruction
@@ -42,7 +42,7 @@ let equal_assign (v, e) (v', e') = v = v' && equal_expression e e'
 let rec equal_instruction i i' =
   match (i, i') with
   | Imprime el, Imprime el' -> el = el'
-  | MultiAssign al, MultiAssign al' ->
+  | Assign al, Assign al' ->
       List.for_all2 (fun a a' -> equal_assign a a') al al'
   | Rem s, Rem s' -> s = s'
   | Vavers e, Vavers e' -> equal_expression e e'
@@ -100,7 +100,7 @@ let rec pp_instruction ff = function
       Format.fprintf ff "IMPRIME [@[<h>%a@]]"
         Format.(pp_print_list ~pp_sep:(fun out () -> fprintf out ",@ ") pp_expr)
         el
-  | MultiAssign l ->
+  | Assign l ->
       Format.fprintf ff "@[<hov>%a@]"
         Format.(
           pp_print_list ~pp_sep:(fun out () -> fprintf out ",@ ") pp_assign)

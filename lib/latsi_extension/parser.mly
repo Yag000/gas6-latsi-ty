@@ -55,7 +55,7 @@ assign:
     p=separated_pair(Var, Equal, expression) { p }
 
 instr:
-    l=separated_nonempty_list(Comma, assign) { MultiAssign l }
+    l=separated_nonempty_list(Comma, assign) { Assign l }
     | Rem s=String { Rem s }
     | Vavers e=expression { Vavers e }
     | Si e1=expression r=relop e2=expression Alors i=instr{ SiAlors (r, e1, e2, i) }

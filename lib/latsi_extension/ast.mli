@@ -15,7 +15,7 @@ type assign = variable * expression
 
 type instruction =
   | Imprime of expr list
-  | MultiAssign of assign list
+  | Assign of assign list
   | Rem of string
   | Vavers of expression
   | SiAlors of relop * expression * expression * instruction
@@ -30,3 +30,4 @@ type program = line list
 
 val equal_program : program -> program -> bool
 val pp_program : Format.formatter -> program -> unit
+val pp_expression : Format.formatter -> expression -> unit
