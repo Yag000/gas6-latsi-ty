@@ -359,9 +359,9 @@ let () =
         ] );
       ( "Retourne",
         [
-          instr_test_case "retorune" "RETOURNE" Retourne;
-          fail_instr_test_case "retorune 1" "RETOURNE 1";
-          fail_instr_test_case "retorune string" "RETOURNE \"STRING\"";
+          instr_test_case "retourne" "RETOURNE" Retourne;
+          fail_instr_test_case "retourne 1" "RETOURNE 1";
+          fail_instr_test_case "retourne string" "RETOURNE \"STRING\"";
         ] );
       ("FIN", [ instr_test_case "FIN" "FIN" Fin ]);
       ("NL", [ instr_test_case "NL" "NL" Nl ]);
