@@ -389,7 +389,7 @@ let test_entree =
 
 let test_sousroutines =
   [
-    test_eval_fail "Retourne without subroutine" "0 RETOURNE\n";
+    test_eval_fail "Retourne without sousroutine" "0 RETOURNE\n";
     test_eval "SOUSROUTINE 3; X = 1; FIN; Y=1; RETOURNE; X=2"
       "0 SOUSROUTINE 3\n 1 X = 1\n 2 FIN\n 3 Y = 1\n 4 RETOURNE\n 5 X = 2\n"
       [ ('X', 1); ('Y', 1) ];
@@ -405,7 +405,7 @@ let test_sousroutines =
        8 P = 3\n\
        9 RETOURNE\n"
       [ ('X', 1); ('Z', 2); ('Y', 1); ('P', 3); ('O', 0) ];
-    test_eval "Recoursive sousroutine"
+    test_eval "Recursive sousroutine"
       " 0 X = 10 \n\
        1 Y = 1 \n\
        2 SOUSROUTINE 100 \n\
@@ -416,7 +416,7 @@ let test_sousroutines =
        103 SOUSROUTINE 100\n\
        104 RETOURNE\n"
       [ ('Y', 1 lsl 10) ];
-    test_eval "Conditional sousroutine"
+    test_eval "Conditional sousroutine executed"
       " 0 X = 10 \n\
        1 Y = 1 \n\
        2 SI X > 1 ALORS SOUSROUTINE 100 \n\
@@ -427,7 +427,7 @@ let test_sousroutines =
        103 SOUSROUTINE 100\n\
        104 RETOURNE\n"
       [ ('Y', 1 lsl 10) ];
-    test_eval "Conditional sousroutine 2"
+    test_eval "Conditional sousroutine not executed"
       " 0 X = 10 \n\
        1 Y = 1 \n\
        2 SI X < 1 ALORS SOUSROUTINE 100 \n\
