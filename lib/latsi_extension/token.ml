@@ -23,6 +23,8 @@ let token_to_string = function
   | Entree -> "Entree"
   | Comma -> "Comma"
   | Imprime -> "Imprime"
+  | Sousroutine -> "Sousroutine"
+  | Retourne -> "Retourne"
   | Fin -> "Fin"
   | Nl -> "Nl"
   | CR -> "CR"

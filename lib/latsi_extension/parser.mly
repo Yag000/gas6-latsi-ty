@@ -24,6 +24,8 @@ open Ast
 %token Alors
 %token Entree
 %token Imprime
+%token Sousroutine 
+%token Retourne
 %token Comma
 %token Fin
 %token Nl
@@ -59,7 +61,9 @@ instr:
     | Si e1=expression r=relop e2=expression Alors i=instr{ SiAlors (r, e1, e2, i) }
     | Entree l= separated_nonempty_list(Comma, var) { Entree l }
     | Imprime el=separated_nonempty_list(Comma, expr) { Imprime el }
-    | Fin { Fin}
+    | Sousroutine e=expression { Sousroutine e }
+    | Retourne { Retourne }
+    | Fin { Fin }
     | Nl { Nl }
 
 relop:

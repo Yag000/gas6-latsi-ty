@@ -2,6 +2,7 @@ open Ast
 
 exception Empty_program
 exception Unkwown_line_number
+exception Illegal_return
 
 val eval : program -> unit
 (** Evaluates a program, i.e. computes the final value of each variable

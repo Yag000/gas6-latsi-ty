@@ -20,6 +20,8 @@ type instruction =
   | Vavers of expression
   | SiAlors of relop * expression * expression * instruction
   | Entree of variable list
+  | Sousroutine of expression
+  | Retourne
   | Fin
   | Nl
 
@@ -50,6 +52,8 @@ let rec equal_instruction i i' =
   | SiAlors (r, e1, e2, i), SiAlors (r', e1', e2', i') ->
       r = r' && equal_expression e1 e1' && equal_expression e2 e2'
       && equal_instruction i i'
+  | Sousroutine e, Sousroutine e' -> equal_expression e e'
+  | Retourne, Retourne -> true
   | _ -> false
 
 let equal_program p1 p2 =
@@ -111,6 +115,8 @@ let rec pp_instruction ff = function
         Format.(
           pp_print_list ~pp_sep:(fun out () -> fprintf out ",@ ") pp_print_char)
         l
+  | Sousroutine e -> Format.fprintf ff "SOUSROUTINE %a" pp_expression e
+  | Retourne -> Format.fprintf ff "RETOURNE"
   | Fin -> Format.fprintf ff "FIN"
   | Nl -> Format.fprintf ff "NL"
 
