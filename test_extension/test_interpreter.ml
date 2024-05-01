@@ -405,6 +405,22 @@ let test_sousroutines =
        8 P = 3\n\
        9 RETOURNE\n"
       [ ('X', 1); ('Z', 2); ('Y', 1); ('P', 3); ('O', 0) ];
+    test_eval "Nested sousroutines order"
+      "0 C = 1\n\
+       1 SOUSROUTINE 5\n\
+       2 X = C\n\
+       3 FIN\n\
+       4 O = 1\n\
+       5 Y = C\n\
+       6 C = C + 1\n\
+       7 SOUSROUTINE 11\n\
+       8 Z = C\n\
+       9 C = C + 1\n\
+       10 RETOURNE\n\
+       11 P = C\n\
+       12 C = C + 1\n\
+       13 RETOURNE\n"
+      [ ('Y', 1); ('P', 2); ('Z', 3); ('X', 4); ('C', 4); ('O', 0) ];
     test_eval "Recursive sousroutine"
       " 0 X = 10 \n\
        1 Y = 1 \n\
