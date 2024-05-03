@@ -100,24 +100,22 @@ let pp_relop ff = function
   | Eq -> Format.fprintf ff "="
 
 let pp_assign ff (v, e) = Format.fprintf ff "%c = %a" v pp_expression e
+let sep_soft_comma out () = Format.fprintf out ",@ "
 
 let rec pp_instruction ff = function
   | Imprime el ->
       Format.fprintf ff "IMPRIME [@[<h>%a@]]"
-        Format.(pp_print_list ~pp_sep:(fun out () -> fprintf out ",@ ") pp_expr)
+        Format.(pp_print_list ~pp_sep:sep_soft_comma pp_expr)
         el
   | Assign l ->
       Format.fprintf ff "@[<hov>%a@]"
-        Format.(
-          pp_print_list ~pp_sep:(fun out () -> fprintf out ",@ ") pp_assign)
+        Format.(pp_print_list ~pp_sep:sep_soft_comma pp_assign)
         l
   | SplitAssign (vl, el) ->
       Format.fprintf ff "@[<hov>%a@] %a @[<hov>%a@]"
-        Format.(
-          pp_print_list ~pp_sep:(fun out () -> fprintf out ",@ ") pp_print_char)
+        Format.(pp_print_list ~pp_sep:sep_soft_comma pp_print_char)
         vl pp_relop Eq
-        Format.(
-          pp_print_list ~pp_sep:(fun out () -> fprintf out ",@ ") pp_expression)
+        Format.(pp_print_list ~pp_sep:sep_soft_comma pp_expression)
         el
   | SiAlors (r, e1, e2, i) ->
       Format.fprintf ff "SI [%a] %a [%a] ALORS [%a]" pp_expression e1 pp_relop r
@@ -126,8 +124,7 @@ let rec pp_instruction ff = function
   | Vavers e -> Format.fprintf ff "VAVERS %a" pp_expression e
   | Entree l ->
       Format.fprintf ff "ENTREE @[<hov>%a@]"
-        Format.(
-          pp_print_list ~pp_sep:(fun out () -> fprintf out ",@ ") pp_print_char)
+        Format.(pp_print_list ~pp_sep:sep_soft_comma pp_print_char)
         l
   | Sousroutine e -> Format.fprintf ff "SOUSROUTINE %a" pp_expression e
   | Retourne -> Format.fprintf ff "RETOURNE"
