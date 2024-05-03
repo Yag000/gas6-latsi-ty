@@ -1,5 +1,7 @@
 %{
 open Ast
+
+exception ParserError of string
 %}
 
 
@@ -56,6 +58,13 @@ assign:
 
 instr:
     l=separated_nonempty_list(Comma, assign) { Assign l }
+    | vl=separated_nonempty_list(Comma, Var) Equal el=separated_nonempty_list(Comma, expression) { 
+            if List.compare_lengths vl el = 0 
+            then
+                SplitAssign (vl, el)
+            else
+                raise (ParserError "Error: list of variables and list of expressions have different lengths.")
+        }
     | Rem s=String { Rem s }
     | Vavers e=expression { Vavers e }
     | Si e1=expression r=relop e2=expression Alors i=instr{ SiAlors (r, e1, e2, i) }

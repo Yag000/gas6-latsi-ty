@@ -16,6 +16,7 @@ type assign = variable * expression
 type instruction =
   | Imprime of expr list
   | Assign of assign list
+  | SplitAssign of variable list * expression list
   | Rem of string (* TODO: Add remaining constructors *)
   | Vavers of expression
   | SiAlors of relop * expression * expression * instruction
@@ -44,6 +45,11 @@ let rec equal_instruction i i' =
   | Imprime el, Imprime el' -> el = el'
   | Assign al, Assign al' ->
       List.for_all2 (fun a a' -> equal_assign a a') al al'
+  | SplitAssign (vl, el), SplitAssign (vl', el') ->
+      List.compare_lengths vl vl' = 0
+      && List.compare_lengths el el' = 0
+      && vl = vl'
+      && List.for_all2 equal_expression el el'
   | Rem s, Rem s' -> s = s'
   | Vavers e, Vavers e' -> equal_expression e e'
   | Entree l, Entree l' -> l = l'
@@ -105,6 +111,14 @@ let rec pp_instruction ff = function
         Format.(
           pp_print_list ~pp_sep:(fun out () -> fprintf out ",@ ") pp_assign)
         l
+  | SplitAssign (vl, el) ->
+      Format.fprintf ff "@[<hov>%a@] %a @[<hov>%a@]"
+        Format.(
+          pp_print_list ~pp_sep:(fun out () -> fprintf out ",@ ") pp_print_char)
+        vl pp_relop Eq
+        Format.(
+          pp_print_list ~pp_sep:(fun out () -> fprintf out ",@ ") pp_expression)
+        el
   | SiAlors (r, e1, e2, i) ->
       Format.fprintf ff "SI [%a] %a [%a] ALORS [%a]" pp_expression e1 pp_relop r
         pp_expression e2 pp_instruction i
