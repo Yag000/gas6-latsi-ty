@@ -99,11 +99,43 @@ let parse_incorrect_split_assign_qcheck =
       Format.printf "%s" s;
       parse_exn s)
 
+let parse_incorrect_solo_assign_qhceck =
+  let parse_exn s =
+    try
+      let lexbuf = Lexing.from_string s in
+      let _ = Latsi_extension.Parser.input Latsi_extension.Lexer.lexer lexbuf in
+      false
+    with
+    | ParserError _ -> false
+    | _ -> true
+  in
+  let open QCheck in
+  Test.make ~count:5000
+    ~name:
+      "Forall vl and il with both having different lengths and either having 1 \
+       element, parsing raises Menhir Error."
+    (pair (list arbitrary_var) (list (int_range 0 1000)))
+    (fun (vl, il) ->
+      assume
+        (let len_vl = List.length vl in
+         let len_il = List.length il in
+         len_vl <> len_il && (len_vl = 1 || len_il = 1));
+      let vl_s =
+        String.concat ", " (List.map (fun v -> Printf.sprintf "%c" v) vl)
+      in
+      let il_s =
+        String.concat ", " (List.map (fun i -> Printf.sprintf "%d" i) il)
+      in
+      let s = Printf.sprintf "0 %s = %s\n" vl_s il_s in
+      Format.printf "%s" s;
+      parse_exn s)
+
 let () =
   run "Parser"
     [
       ( "Assign",
         [
+          QCheck_alcotest.to_alcotest parse_incorrect_solo_assign_qhceck;
           fail_instr_test_case "invalid variable" "x = 1";
           fail_instr_test_case "incomplete assign 1" "=";
           fail_instr_test_case "incomplete assign 2" "x =";
