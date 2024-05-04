@@ -1,7 +1,6 @@
 %{
 open Ast
 
-exception ParserError of string
 %}
 
 
@@ -56,15 +55,20 @@ line:
 assign:
     p=separated_pair(Var, Equal, expression) { p }
 
-instr:
-    l=separated_nonempty_list(Comma, assign) { Assign l }
-    | vl=separated_nonempty_list(Comma, Var) Equal el=separated_nonempty_list(Comma, expression) { 
-            if List.compare_lengths vl el = 0 
+split_assign:
+    vh=Var Comma vt=separated_nonempty_list(Comma, Var) Equal eh=expression Comma et=separated_nonempty_list(Comma, expression) { 
+            let vars = vh::vt in
+            let expressions = eh::et in
+            if List.compare_lengths vars expressions = 0 
             then
-                SplitAssign (vl, el)
+                SplitAssign (vars, expressions)
             else
                 raise (ParserError "Error: list of variables and list of expressions have different lengths.")
         }
+
+instr:
+    | l=separated_nonempty_list(Comma, assign) { Assign l }
+    | sa=split_assign { sa }
     | Rem s=String { Rem s }
     | Vavers e=expression { Vavers e }
     | Si e1=expression r=relop e2=expression Alors i=instr{ SiAlors (r, e1, e2, i) }
