@@ -40,6 +40,31 @@ let parse_correct_multi_assign_qcheck =
       let actual = parse s in
       expected = actual)
 
+let parse_correct_split_assign_qcheck =
+  let open QCheck in
+  Test.make ~count:1000 ~name:"parse correct split assign for more 2+ variables"
+    (pair (list arbitrary_var) (list (int_range 0 1000)))
+    (fun (vl, il) ->
+      assume (List.length vl > 1 && List.length vl = List.length il);
+      let vl_s =
+        String.concat ", " (List.map (fun v -> Printf.sprintf "%c" v) vl)
+      in
+      let il_s =
+        String.concat ", " (List.map (fun i -> Printf.sprintf "%d" i) il)
+      in
+      let s = Printf.sprintf "0 %s = %s\n" vl_s il_s in
+      let expected =
+        Some
+          [
+            {
+              number = 0;
+              instr = SplitAssign (vl, List.map (fun i -> Number i) il);
+            };
+          ]
+      in
+      let actual = parse s in
+      expected = actual)
+
 let () =
   run "Parser"
     [
@@ -120,6 +145,26 @@ let () =
           instr_test_case "X = X, Y = Y" "X = X, Y = Y"
             (Assign [ ('X', Var 'X'); ('Y', Var 'Y') ]);
           QCheck_alcotest.to_alcotest parse_correct_multi_assign_qcheck;
+        ] );
+      ( "Split_Assign",
+        [
+          QCheck_alcotest.to_alcotest parse_correct_split_assign_qcheck;
+          instr_test_case "Same variable appears" "X, X, Y = 1, 2, 3"
+            (SplitAssign ([ 'X'; 'X'; 'Y' ], [ Number 1; Number 2; Number 3 ]));
+          fail_instr_test_case "Missing 1st Var" ", Y = 1, 2";
+          fail_instr_test_case "Missing relop" "X, Y 1, 2";
+          fail_instr_test_case "Missing 1st expression" "X, Y =, 2";
+          fail_instr_test_case "Missing comma separator" "X Y = 1 2";
+          fail_instr_test_case "Missing 2nd Var" "X, = 1, 2";
+          fail_instr_test_case "Missing 2nd expression" "X, Y = 1, ";
+          fail_instr_test_case "One invalid variable" "x, Y = 1, 2";
+          fail_instr_test_case "One assigning a string" "X, Y = \"1\", 2";
+          fail_instr_test_case "Invalid variables" "x, y = 1, 2";
+          fail_instr_test_case "Assigning strings" "X, Y = \"1\", \"2\"";
+          instr_test_case "X, Y = Y, X" "X, Y = Y, X"
+            (SplitAssign ([ 'X'; 'Y' ], [ Var 'Y'; Var 'X' ]));
+          instr_test_case "X, Y = X, Y" "X, Y = X, Y"
+            (SplitAssign ([ 'X'; 'Y' ], [ Var 'X'; Var 'Y' ]));
         ] );
       ( "Unary operations",
         [
