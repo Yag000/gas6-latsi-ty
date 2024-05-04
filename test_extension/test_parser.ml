@@ -65,6 +65,27 @@ let parse_correct_split_assign_qcheck =
       let actual = parse s in
       expected = actual)
 
+let parse_incorrect_split_assign_qcheck =
+  let open QCheck in
+  Test.make ~count:1000
+    ~name:
+      "Forall non-empty vl and il, if vl and il have different lengths \
+       ParserError is raised."
+    (pair (list arbitrary_var) (list (int_range 0 1000)))
+    (fun (vl, il) ->
+      assume
+        (let len_vl = List.length vl in
+         let len_il = List.length il in
+         len_vl > 0 && len_il > 0 && len_vl <> len_il);
+      let vl_s =
+        String.concat ", " (List.map (fun v -> Printf.sprintf "%c" v) vl)
+      in
+      let il_s =
+        String.concat ", " (List.map (fun i -> Printf.sprintf "%d" i) il)
+      in
+      let s = Printf.sprintf "0 %s = %s\n" vl_s il_s in
+      match parse s with None -> true | _ -> false)
+
 let () =
   run "Parser"
     [
@@ -149,6 +170,7 @@ let () =
       ( "Split_Assign",
         [
           QCheck_alcotest.to_alcotest parse_correct_split_assign_qcheck;
+          QCheck_alcotest.to_alcotest parse_incorrect_split_assign_qcheck;
           instr_test_case "Same variable appears" "X, X, Y = 1, 2, 3"
             (SplitAssign ([ 'X'; 'X'; 'Y' ], [ Number 1; Number 2; Number 3 ]));
           fail_instr_test_case "Missing 1st Var" ", Y = 1, 2";
