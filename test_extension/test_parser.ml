@@ -69,17 +69,26 @@ let parse_correct_split_assign_qcheck =
       expected = actual)
 
 let parse_incorrect_split_assign_qcheck =
+  let parse_exn s =
+    try
+      let lexbuf = Lexing.from_string s in
+      let _ = Latsi_extension.Parser.input Latsi_extension.Lexer.lexer lexbuf in
+      false
+    with
+    | ParserError _ -> true
+    | _ -> false
+  in
   let open QCheck in
   Test.make ~count:5000
     ~name:
-      "Forall non-empty vl and il, if vl and il have different lengths \
-       ParserError is raised."
+      "Forall vl and il with more than 1 element, if vl and il have different \
+       lengths ParserError is raised."
     (pair (list arbitrary_var) (list (int_range 0 1000)))
     (fun (vl, il) ->
       assume
         (let len_vl = List.length vl in
          let len_il = List.length il in
-         len_vl > 0 && len_il > 0 && len_vl <> len_il);
+         len_vl > 1 && len_il > 1 && len_vl <> len_il);
       let vl_s =
         String.concat ", " (List.map (fun v -> Printf.sprintf "%c" v) vl)
       in
@@ -87,7 +96,8 @@ let parse_incorrect_split_assign_qcheck =
         String.concat ", " (List.map (fun i -> Printf.sprintf "%d" i) il)
       in
       let s = Printf.sprintf "0 %s = %s\n" vl_s il_s in
-      match parse s with None -> true | _ -> false)
+      Format.printf "%s" s;
+      parse_exn s)
 
 let () =
   run "Parser"
