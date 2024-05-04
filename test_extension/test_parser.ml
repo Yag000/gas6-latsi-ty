@@ -26,7 +26,7 @@ let instr_test_case name s expected =
 
 let parse_correct_multi_assign_qcheck =
   let open QCheck in
-  Test.make ~count:500 ~name:"parse correct multi assign"
+  Test.make ~count:5000 ~name:"parse correct multi assign"
     (list (pair arbitrary_var (int_range 0 1000)))
     (fun l ->
       assume (List.length l > 0);
@@ -42,7 +42,10 @@ let parse_correct_multi_assign_qcheck =
 
 let parse_correct_split_assign_qcheck =
   let open QCheck in
-  Test.make ~count:1000 ~name:"parse correct split assign for more 2+ variables"
+  Test.make ~count:5000
+    ~name:
+      "Forall vl and il with more than 1 element and same length, split assign \
+       is parsed correctly."
     (pair (list arbitrary_var) (list (int_range 0 1000)))
     (fun (vl, il) ->
       assume (List.length vl > 1 && List.length vl = List.length il);
@@ -67,7 +70,7 @@ let parse_correct_split_assign_qcheck =
 
 let parse_incorrect_split_assign_qcheck =
   let open QCheck in
-  Test.make ~count:1000
+  Test.make ~count:5000
     ~name:
       "Forall non-empty vl and il, if vl and il have different lengths \
        ParserError is raised."
