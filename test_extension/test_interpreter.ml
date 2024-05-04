@@ -102,6 +102,49 @@ let test_var_multi_assignment =
       [ ('X', 0); ('Y', 2); ('Z', 6) ];
   ]
 
+let test_var_split_assignment =
+  [
+    test_eval "Split 2-variable init" "0 X, Y = 1, 2\n" [ ('X', 1); ('Y', 2) ];
+    test_eval "Split 2-variable init, 2-variable swap"
+      "0 X, Y = 1, 2\n1 X, Y = Y, X\n"
+      [ ('X', 2); ('Y', 1) ];
+    test_eval "Simple 2-variable init, 2-variable swap"
+      "0 X = 1\n1 Y = 2\n2 X, Y = Y, X\n"
+      [ ('X', 2); ('Y', 1) ];
+    test_eval "Split 3-variable init" "0 X, Y, Z = 1, 2, 3\n"
+      [ ('X', 1); ('Y', 2); ('Z', 3) ];
+    test_eval "Split 3-variable init, 3-variable swap"
+      "0 X, Y, Z = 1, 2, 3\n1 X, Y, Z = Y, Z, X\n"
+      [ ('X', 2); ('Y', 3); ('Z', 1) ];
+    test_eval "Simple 3-variable init, 3-variable swap"
+      "0 X = 1\n1 Y = 2\n2 Z = 3\n3 X, Y, Z = Y, Z, X\n"
+      [ ('X', 2); ('Y', 3); ('Z', 1) ];
+    test_eval
+      "Simple 1-variable init, Split (1-variable assign & 1-variable eval)"
+      "0 X = 10\n1 X, Y = 5, X + 1\n"
+      [ ('X', 5); ('Y', 11) ];
+    test_eval
+      "Simple 2-variable init, Split (1-variable assign & 1-variable eval)"
+      "0 X = 10\n1 Y = 20\n2 X, Y = 5, X + 1\n"
+      [ ('X', 5); ('Y', 11) ];
+    test_eval
+      "Split 2-variable init, Split (1-variable assign & 1-variable eval)"
+      "0 X, Y = 10, 20\n1 X, Y = 5, X + 1\n"
+      [ ('X', 5); ('Y', 11) ];
+    test_eval "Simple 2-variable init, Split (2-variable eval)"
+      "0 X = 10\n1 Y = 20\n2 X, Y = Y - 7, X + 1\n"
+      [ ('X', 13); ('Y', 11) ];
+    test_eval "Split 2-variable init, Split (2-variable eval)"
+      "0 X, Y = 10, 20\n1 X, Y = Y - 7, X + 1\n"
+      [ ('X', 13); ('Y', 11) ];
+    test_eval "Simple 3-variable init, Split (3-variable eval)"
+      "0 X = 10\n1 Y = 20\n2 Z = 30\n3 X, Y, Z = Y - 7, Z + 1, X + 1\n"
+      [ ('X', 13); ('Y', 31); ('Z', 11) ];
+    test_eval "Split 3-variable init, Split (3-variable eval)"
+      "0 X, Y, Z = 10, 20, 30\n1 X, Y, Z = Y - 7, Z + 1, X + 1\n"
+      [ ('X', 13); ('Y', 31); ('Z', 11) ];
+  ]
+
 let test_addition =
   [
     test_eval "X = 1 + 2" "0 X = 1 + 2\n" [ ('X', 3) ];
@@ -496,6 +539,7 @@ let () =
       ("Empty program", [ test_empty_program "" ]);
       ("Variable assignment", test_var_assignment);
       ("Variable multi assignment", test_var_multi_assignment);
+      ("Variable split assignment", test_var_split_assignment);
       ("Addition", test_addition);
       ("Substraction", test_substraction);
       ("Multiplication", test_multiplication);
