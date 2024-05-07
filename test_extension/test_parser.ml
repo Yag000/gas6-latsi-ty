@@ -216,6 +216,15 @@ let () =
         [
           QCheck_alcotest.to_alcotest parse_correct_split_assign_qcheck;
           QCheck_alcotest.to_alcotest parse_incorrect_split_assign_qcheck;
+          instr_test_case "Swap 2 variables" "X, Y = Y, X"
+            (SplitAssign ([ 'X'; 'Y' ], [ Var 'Y'; Var 'X' ]));
+          instr_test_case "2 expressions" "X, Y = 1, 2 + 2"
+            (SplitAssign
+               ([ 'X'; 'Y' ], [ Number 1; Binop (Add, Number 2, Number 2) ]));
+          instr_test_case "3 expressions" "X, Y, Z = 1, 2 + X, 3"
+            (SplitAssign
+               ( [ 'X'; 'Y'; 'Z' ],
+                 [ Number 1; Binop (Add, Number 2, Var 'X'); Number 3 ] ));
           instr_test_case "Same variable appears" "X, X, Y = 1, 2, 3"
             (SplitAssign ([ 'X'; 'X'; 'Y' ], [ Number 1; Number 2; Number 3 ]));
           fail_instr_test_case "Missing 1st Var" ", Y = 1, 2";
