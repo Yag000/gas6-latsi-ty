@@ -81,9 +81,7 @@ let pp_binop ff = function
   | Mul -> Format.fprintf ff "*"
   | Div -> Format.fprintf ff "/"
 
-let rec pp_expression ff e =
-  Format.fprintf ff "EXPRESSION: ";
-  match e with
+let rec pp_expression ff = function
   | Var v -> Format.fprintf ff "%c" v
   | Number n -> Format.fprintf ff "%d" n
   | Unop (u, e) -> Format.fprintf ff "(%a%a)" pp_unop u pp_expression e
