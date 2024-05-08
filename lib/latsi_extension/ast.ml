@@ -103,7 +103,6 @@ let pp_relop ff = function
 
 let pp_assign ff (v, e) = Format.fprintf ff "%c = %a" v pp_expression e
 let sep_soft_comma out () = Format.fprintf out ",@ "
-let pp_var ff v = Format.fprintf ff "VAR: %c" v
 
 let rec pp_instruction ff = function
   | Imprime el ->
@@ -111,12 +110,12 @@ let rec pp_instruction ff = function
         Format.(pp_print_list ~pp_sep:sep_soft_comma pp_expr)
         el
   | Assign l ->
-      Format.fprintf ff "ASSIGN: @[<hov>%a@]"
+      Format.fprintf ff "@[<hov>%a@]"
         Format.(pp_print_list ~pp_sep:sep_soft_comma pp_assign)
         l
   | SplitAssign (vl, el) ->
-      Format.fprintf ff "SPLIT ASSIGN: @[<hov>%a@] %a @[<hov>%a@]"
-        Format.(pp_print_list ~pp_sep:sep_soft_comma pp_var)
+      Format.fprintf ff "@[<hov>%a@] %a @[<hov>%a@]"
+        Format.(pp_print_list ~pp_sep:sep_soft_comma pp_print_char)
         vl pp_relop Eq
         Format.(pp_print_list ~pp_sep:sep_soft_comma pp_expression)
         el

@@ -96,7 +96,6 @@ let parse_incorrect_split_assign_qcheck =
         String.concat ", " (List.map (fun i -> Printf.sprintf "%d" i) il)
       in
       let s = Printf.sprintf "0 %s = %s\n" vl_s il_s in
-      Format.printf "%s" s;
       parse_exn s)
 
 let parse_incorrect_solo_assign_qhceck =
@@ -127,7 +126,6 @@ let parse_incorrect_solo_assign_qhceck =
         String.concat ", " (List.map (fun i -> Printf.sprintf "%d" i) il)
       in
       let s = Printf.sprintf "0 %s = %s\n" vl_s il_s in
-      Format.printf "%s" s;
       parse_exn s)
 
 let () =
