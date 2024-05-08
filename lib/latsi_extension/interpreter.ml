@@ -73,6 +73,10 @@ module Implementation = struct
     | Assign l ->
         List.iter (fun a -> eval_assign a env) l;
         Next
+    | SplitAssign (vl, el) ->
+        List.map2 (fun v e -> (v, eval_expression env e)) vl el
+        |> List.to_seq |> Hashtbl.replace_seq env;
+        Next
     | Vavers e ->
         let index = eval_expression env e in
         Jump index

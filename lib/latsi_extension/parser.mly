@@ -1,5 +1,6 @@
 %{
 open Ast
+
 %}
 
 
@@ -54,8 +55,20 @@ line:
 assign:
     p=separated_pair(Var, Equal, expression) { p }
 
+split_assign:
+    vh=Var Comma vt=separated_nonempty_list(Comma, Var) Equal eh=expression Comma et=separated_nonempty_list(Comma, expression) { 
+            let vars = vh::vt in
+            let expressions = eh::et in
+            if List.compare_lengths vars expressions = 0 
+            then
+                SplitAssign (vars, expressions)
+            else
+                raise ParserError
+        }
+
 instr:
-    l=separated_nonempty_list(Comma, assign) { Assign l }
+    | l=separated_nonempty_list(Comma, assign) { Assign l }
+    | sa=split_assign { sa }
     | Rem s=String { Rem s }
     | Vavers e=expression { Vavers e }
     | Si e1=expression r=relop e2=expression Alors i=instr{ SiAlors (r, e1, e2, i) }
