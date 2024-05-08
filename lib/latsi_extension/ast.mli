@@ -34,3 +34,10 @@ type program = line list
 val equal_program : program -> program -> bool
 val pp_program : Format.formatter -> program -> unit
 val pp_expression : Format.formatter -> expression -> unit
+
+module Debug : sig
+  val pp_assign_debug : Format.formatter -> variable * expression -> unit
+  val pp_instruction_debug : Format.formatter -> instruction -> unit
+  val pp_line_debug : Format.formatter -> line -> unit
+  val pp_program_debug : Format.formatter -> program -> unit
+end

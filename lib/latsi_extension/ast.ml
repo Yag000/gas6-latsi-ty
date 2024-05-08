@@ -146,12 +146,7 @@ let pp_titled_list (title : string) ff (l : 'a list) pp =
 
 let pp_program ff p = pp_titled_list "Program" ff p pp_line
 
-module Debug : sig
-  val pp_assign_debug : Format.formatter -> variable * expression -> unit
-  val pp_instruction_debug : Format.formatter -> instruction -> unit
-  val pp_line_debug : Format.formatter -> line -> unit
-  val pp_program_debug : Format.formatter -> program -> unit
-end = struct
+module Debug = struct
   let pp_assign_debug ff (v, e) =
     Format.fprintf ff "ASSIGN: %c = %a" v pp_expression e
 
