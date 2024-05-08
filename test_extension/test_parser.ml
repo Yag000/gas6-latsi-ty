@@ -68,18 +68,6 @@ let parse_correct_split_assign_qcheck =
       let actual = parse s in
       expected = actual)
 
-let parse_string_exn s =
-  let lexbuf = Lexing.from_string s in
-  Latsi_extension.Parser.input Latsi_extension.Lexer.lexer lexbuf
-
-let is_exception_raised exn f =
-  try
-    let _ = f in
-    false
-  with
-  | exn' when exn' = exn -> true
-  | _ -> false
-
 let parse_incorrect_split_assign_qcheck =
   let open QCheck in
   Test.make ~count:5000
@@ -99,7 +87,7 @@ let parse_incorrect_split_assign_qcheck =
         String.concat ", " (List.map (fun i -> Printf.sprintf "%d" i) il)
       in
       let s = Printf.sprintf "0 %s = %s\n" vl_s il_s in
-      is_exception_raised ParserError (parse_string_exn s))
+      Option.is_some (parse s))
 
 let parse_incorrect_solo_assign_qhceck =
   let open QCheck in
@@ -120,7 +108,7 @@ let parse_incorrect_solo_assign_qhceck =
         String.concat ", " (List.map (fun i -> Printf.sprintf "%d" i) il)
       in
       let s = Printf.sprintf "0 %s = %s\n" vl_s il_s in
-      is_exception_raised ParserError (parse_string_exn s))
+      Option.is_some (parse s))
 
 let () =
   run "Parser"
