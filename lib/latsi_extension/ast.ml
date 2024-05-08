@@ -145,3 +145,56 @@ let pp_titled_list (title : string) ff (l : 'a list) pp =
         l
 
 let pp_program ff p = pp_titled_list "Program" ff p pp_line
+
+module Debug : sig
+  val pp_assign_debug : Format.formatter -> variable * expression -> unit
+  val pp_instruction_debug : Format.formatter -> instruction -> unit
+  val pp_line_debug : Format.formatter -> line -> unit
+  val pp_program_debug : Format.formatter -> program -> unit
+end = struct
+  let pp_assign_debug ff (v, e) =
+    Format.fprintf ff "ASSIGN: %c = %a" v pp_expression e
+
+  let rec pp_instruction_debug ff = function
+    | Imprime el ->
+        Format.fprintf ff "IMPRIME [@[<h>%a@]]"
+          Format.(pp_print_list ~pp_sep:sep_soft_comma pp_expr)
+          el
+    | Assign l ->
+        Format.fprintf ff "@[<hov>%a@]"
+          Format.(pp_print_list ~pp_sep:sep_soft_comma pp_assign_debug)
+          l
+    | SplitAssign (vl, el) ->
+        Format.fprintf ff "SPLIT ASSIGN: @[<hov>%a@] %a @[<hov>%a@]"
+          Format.(pp_print_list ~pp_sep:sep_soft_comma pp_print_char)
+          vl pp_relop Eq
+          Format.(pp_print_list ~pp_sep:sep_soft_comma pp_expression)
+          el
+    | SiAlors (r, e1, e2, i) ->
+        Format.fprintf ff "SI [%a] %a [%a] ALORS [%a]" pp_expression e1 pp_relop
+          r pp_expression e2 pp_instruction_debug i
+    | Rem s -> Format.fprintf ff "REM %s" s
+    | Vavers e -> Format.fprintf ff "VAVERS %a" pp_expression e
+    | Entree l ->
+        Format.fprintf ff "ENTREE @[<hov>%a@]"
+          Format.(pp_print_list ~pp_sep:sep_soft_comma pp_print_char)
+          l
+    | Sousroutine e -> Format.fprintf ff "SOUSROUTINE %a" pp_expression e
+    | Retourne -> Format.fprintf ff "RETOURNE"
+    | Fin -> Format.fprintf ff "FIN"
+    | Nl -> Format.fprintf ff "NL"
+
+  let pp_line_debug ff l =
+    Format.fprintf ff "%d %a" l.number pp_instruction_debug l.instr
+
+  let pp_titled_list (title : string) ff (l : 'a list) pp =
+    Format.fprintf ff "%s" title;
+    match l with
+    | [] -> Format.fprintf ff ": []@."
+    | _ ->
+        Format.fprintf ff ": [@.@[<v>%a@]@.]@."
+          Format.(pp_print_list ~pp_sep:(fun out () -> fprintf out "@ ") pp)
+          l
+
+  let pp_program_debug ff p = pp_titled_list "Program" ff p pp_line_debug
+end

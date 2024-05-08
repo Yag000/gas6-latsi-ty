@@ -32,8 +32,5 @@ type line = { number : int; instr : instruction }
 type program = line list
 
 val equal_program : program -> program -> bool
-val sep_soft_comma : Format.formatter -> unit -> unit
-val pp_relop : Format.formatter -> relop -> unit
-val pp_expr : Format.formatter -> expr -> unit
 val pp_program : Format.formatter -> program -> unit
 val pp_expression : Format.formatter -> expression -> unit
