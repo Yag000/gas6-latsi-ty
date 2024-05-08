@@ -68,16 +68,19 @@ let parse_correct_split_assign_qcheck =
       let actual = parse s in
       expected = actual)
 
+let parse_string_exn s =
+  let lexbuf = Lexing.from_string s in
+  Latsi_extension.Parser.input Latsi_extension.Lexer.lexer lexbuf
+
+let is_exception_raised exn f =
+  try
+    let _ = f in
+    false
+  with
+  | exn' when exn' = exn -> true
+  | _ -> false
+
 let parse_incorrect_split_assign_qcheck =
-  let parse_exn s =
-    try
-      let lexbuf = Lexing.from_string s in
-      let _ = Latsi_extension.Parser.input Latsi_extension.Lexer.lexer lexbuf in
-      false
-    with
-    | ParserError _ -> true
-    | _ -> false
-  in
   let open QCheck in
   Test.make ~count:5000
     ~name:
@@ -96,23 +99,14 @@ let parse_incorrect_split_assign_qcheck =
         String.concat ", " (List.map (fun i -> Printf.sprintf "%d" i) il)
       in
       let s = Printf.sprintf "0 %s = %s\n" vl_s il_s in
-      parse_exn s)
+      is_exception_raised ParserError (parse_string_exn s))
 
 let parse_incorrect_solo_assign_qhceck =
-  let parse_exn s =
-    try
-      let lexbuf = Lexing.from_string s in
-      let _ = Latsi_extension.Parser.input Latsi_extension.Lexer.lexer lexbuf in
-      false
-    with
-    | ParserError _ -> false
-    | _ -> true
-  in
   let open QCheck in
   Test.make ~count:5000
     ~name:
       "Forall vl and il with both having different lengths and either having 1 \
-       element, parsing raises Menhir Error."
+       element, parsing raises ParserError."
     (pair (list arbitrary_var) (list (int_range 0 1000)))
     (fun (vl, il) ->
       assume
@@ -126,7 +120,7 @@ let parse_incorrect_solo_assign_qhceck =
         String.concat ", " (List.map (fun i -> Printf.sprintf "%d" i) il)
       in
       let s = Printf.sprintf "0 %s = %s\n" vl_s il_s in
-      parse_exn s)
+      is_exception_raised ParserError (parse_string_exn s))
 
 let () =
   run "Parser"

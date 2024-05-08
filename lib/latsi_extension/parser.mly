@@ -63,7 +63,7 @@ split_assign:
             then
                 SplitAssign (vars, expressions)
             else
-                raise (ParserError "Error: list of variables and list of expressions have different lengths.")
+                raise ParserError
         }
 
 instr:

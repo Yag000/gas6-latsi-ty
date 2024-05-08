@@ -1,4 +1,4 @@
-exception ParserError of string
+exception ParserError
 
 type variable = char
 type unop = Pos | Neg
