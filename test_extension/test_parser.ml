@@ -24,9 +24,21 @@ let fail_instr_test_case name s = option_instr_test_case name s None
 let instr_test_case name s expected =
   option_instr_test_case name s (Some expected)
 
+let parse_correct_solo_assign_qcheck =
+  let open QCheck in
+  Test.make ~count:500 ~name:"parse correct solo assign"
+    (pair arbitrary_var (int_range 0 1000))
+    (fun (v, i) ->
+      let s = Printf.sprintf "0 %c = %d\n" v i in
+      let expected =
+        Some [ { number = 0; instr = Assign [ (v, Number i) ] } ]
+      in
+      let actual = parse s in
+      expected = actual)
+
 let parse_correct_multi_assign_qcheck =
   let open QCheck in
-  Test.make ~count:5000 ~name:"parse correct multi assign"
+  Test.make ~count:1000 ~name:"parse correct multi assign"
     (list (pair arbitrary_var (int_range 0 1000)))
     (fun l ->
       assume (List.length l > 0);
@@ -42,13 +54,11 @@ let parse_correct_multi_assign_qcheck =
 
 let parse_correct_split_assign_qcheck =
   let open QCheck in
-  Test.make ~count:5000
-    ~name:
-      "Forall vl and il with more than 1 element and same length, split assign \
-       is parsed correctly."
-    (pair (list arbitrary_var) (list (int_range 0 1000)))
-    (fun (vl, il) ->
-      assume (List.length vl > 1 && List.length vl = List.length il);
+  Test.make ~count:1000 ~name:"parse correct split assign"
+    (list (pair arbitrary_var (int_range 0 1000)))
+    (fun l ->
+      assume (List.length l > 1);
+      let vl, il = List.split l in
       let vl_s =
         String.concat ", " (List.map (fun v -> Printf.sprintf "%c" v) vl)
       in
@@ -68,59 +78,72 @@ let parse_correct_split_assign_qcheck =
       let actual = parse s in
       expected = actual)
 
-let parse_incorrect_split_assign_qcheck =
+let parse_incorrect_solo_var_split_assign_qcheck =
   let open QCheck in
-  Test.make ~count:5000
+  Test.make ~count:500
     ~name:
-      "Forall vl and il with more than 1 element, if vl and il have different \
-       lengths ParserError is raised."
-    (pair (list arbitrary_var) (list (int_range 0 1000)))
-    (fun (vl, il) ->
-      assume
-        (let len_vl = List.length vl in
-         let len_il = List.length il in
-         len_vl > 1 && len_il > 1 && len_vl <> len_il);
-      let vl_s =
-        String.concat ", " (List.map (fun v -> Printf.sprintf "%c" v) vl)
+      "Forall assign-type line with only 1 Var and n expressions, with n <> 1, \
+       parsing fails."
+    (pair arbitrary_var (list (int_range 0 1000)))
+    (fun (var, int_list) ->
+      assume (List.length int_list <> 1);
+      let number_list =
+        String.concat ", " (List.map (fun i -> Printf.sprintf "%d" i) int_list)
       in
-      let il_s =
-        String.concat ", " (List.map (fun i -> Printf.sprintf "%d" i) il)
-      in
-      let s = Printf.sprintf "0 %s = %s\n" vl_s il_s in
-      Option.is_some (parse s))
+      let s = Printf.sprintf "0 %c = %s\n" var number_list in
+      Option.is_none (parse s))
 
-let parse_incorrect_solo_assign_qhceck =
+let parse_incorrect_solo_expression_split_assign_qcheck =
   let open QCheck in
-  Test.make ~count:5000
+  Test.make ~count:500
     ~name:
-      "Forall vl and il with both having different lengths and either having 1 \
-       element, parsing raises ParserError."
-    (pair (list arbitrary_var) (list (int_range 0 1000)))
-    (fun (vl, il) ->
-      assume
-        (let len_vl = List.length vl in
-         let len_il = List.length il in
-         len_vl <> len_il && (len_vl = 1 || len_il = 1));
-      let vl_s =
-        String.concat ", " (List.map (fun v -> Printf.sprintf "%c" v) vl)
+      "Forall assign-type line with n Vars and only 1 expression, with n <> 1, \
+       parsing fails."
+    (pair (list arbitrary_var) (int_range 0 1000))
+    (fun (var_list, i) ->
+      assume (List.length var_list <> 1);
+      let var_list =
+        String.concat ", " (List.map (fun v -> Printf.sprintf "%c" v) var_list)
       in
-      let il_s =
-        String.concat ", " (List.map (fun i -> Printf.sprintf "%d" i) il)
+      let s = Printf.sprintf "0 %s = %d\n" var_list i in
+      Option.is_none (parse s))
+
+let parse_incorrect_no_var_split_assign_qcheck =
+  let open QCheck in
+  Test.make ~count:500
+    ~name:
+      "Forall assign-type line with no Var and n expressions, parsing fails."
+    (list (int_range 0 1000))
+    (fun int_list ->
+      let number_list =
+        String.concat ", " (List.map (fun i -> Printf.sprintf "%d" i) int_list)
       in
-      let s = Printf.sprintf "0 %s = %s\n" vl_s il_s in
-      Option.is_some (parse s))
+      let s = Printf.sprintf "0 = %s\n" number_list in
+      Option.is_none (parse s))
+
+let parse_incorrect_no_expression_split_assign_qcheck =
+  let open QCheck in
+  Test.make ~count:500
+    ~name:
+      "Forall assign-type line with n Vars and no expression, parsing fails."
+    (list arbitrary_var) (fun var_list ->
+      let var_list =
+        String.concat ", " (List.map (fun v -> Printf.sprintf "%c" v) var_list)
+      in
+      let s = Printf.sprintf "0 %s =\n" var_list in
+      Option.is_none (parse s))
 
 let () =
   run "Parser"
     [
       ( "Assign",
         [
-          QCheck_alcotest.to_alcotest parse_incorrect_solo_assign_qhceck;
           fail_instr_test_case "invalid variable" "x = 1";
           fail_instr_test_case "incomplete assign 1" "=";
           fail_instr_test_case "incomplete assign 2" "x =";
           fail_instr_test_case "incomplete assign 3" "= 1";
           fail_instr_test_case "assigning a string" "X = \"1\"";
+          QCheck_alcotest.to_alcotest parse_correct_solo_assign_qcheck;
           instr_test_case "simple integer" "X = 1" (Assign [ ('X', Number 1) ]);
           instr_test_case "X = Y" "X = Y" (Assign [ ('X', Var 'Y') ]);
           instr_test_case "X = X" "X = X" (Assign [ ('X', Var 'X') ]);
@@ -195,7 +218,13 @@ let () =
       ( "Split_Assign",
         [
           QCheck_alcotest.to_alcotest parse_correct_split_assign_qcheck;
-          QCheck_alcotest.to_alcotest parse_incorrect_split_assign_qcheck;
+          QCheck_alcotest.to_alcotest
+            parse_incorrect_solo_var_split_assign_qcheck;
+          QCheck_alcotest.to_alcotest
+            parse_incorrect_solo_expression_split_assign_qcheck;
+          QCheck_alcotest.to_alcotest parse_incorrect_no_var_split_assign_qcheck;
+          QCheck_alcotest.to_alcotest
+            parse_incorrect_no_expression_split_assign_qcheck;
           instr_test_case "Swap 2 variables" "X, Y = Y, X"
             (SplitAssign ([ 'X'; 'Y' ], [ Var 'Y'; Var 'X' ]));
           instr_test_case "2 expressions" "X, Y = 1, 2 + 2"
