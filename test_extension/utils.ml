@@ -6,7 +6,7 @@ open Alcotest
 let keywords =
   [ "NL"; "REM"; "VAVERS"; "SI"; "ALORS"; "ENTREE"; "IMPRIME"; "FIN" ]
 
-(* This function should be as fast as possible, it's a bottle nec for arbitrary_var. This
+(* This function should be as fast as possible, it's a bottleneck for arbitrary_var. This
    solutions is not the purest, but it's pretty fast. *)
 let join_char_list (l : char list) =
   let buf = Buffer.create 64 in
