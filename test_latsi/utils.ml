@@ -3,9 +3,7 @@ open Latsi.Token
 open Latsi.Ast
 open Alcotest
 
-let join_char_list (l : char list) =
-  List.fold_left (fun acc c -> acc ^ String.make 1 c) "" l
-
+let join_char_list (l : char list) = String.of_seq (List.to_seq l)
 let pp_token ff (token : token) = Format.fprintf ff "%s" (token_to_string token)
 
 let token_testable =

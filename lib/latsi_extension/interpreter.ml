@@ -5,7 +5,7 @@ exception Unkwown_line_number
 exception Illegal_return
 
 module Implementation = struct
-  type env = (char, int) Hashtbl.t
+  type env = (string, int) Hashtbl.t
 
   let eval_binop = function
     | Add -> ( + )
@@ -122,7 +122,8 @@ module Implementation = struct
     | _ ->
         (* Initialize the environment with 26 variables A-Z *)
         let env = Hashtbl.create 26 in
-        List.init 26 (fun i -> char_of_int (i + int_of_char 'A'))
+        List.init 26 (fun i ->
+            char_of_int (i + int_of_char 'A') |> String.make 1)
         |> List.iter (fun v -> Hashtbl.add env v 0);
 
         (* Remove duplicates *)

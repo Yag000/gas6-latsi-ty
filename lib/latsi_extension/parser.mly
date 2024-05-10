@@ -6,7 +6,7 @@ open Ast
 
 %token <string> String
 %token <int> Nat
-%token <char> Var
+%token <string> Var
 %token Langle
 %token Rangle
 %token LangleEqual

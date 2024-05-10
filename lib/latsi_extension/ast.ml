@@ -1,6 +1,6 @@
 exception ParserError
 
-type variable = char
+type variable = string
 type unop = Pos | Neg
 type binop = Add | Sub | Mul | Div
 
@@ -82,7 +82,7 @@ let pp_binop ff = function
   | Div -> Format.fprintf ff "/"
 
 let rec pp_expression ff = function
-  | Var v -> Format.fprintf ff "%c" v
+  | Var v -> Format.fprintf ff "%s" v
   | Number n -> Format.fprintf ff "%d" n
   | Unop (u, e) -> Format.fprintf ff "(%a%a)" pp_unop u pp_expression e
   | Binop (op, e1, e2) ->
@@ -101,7 +101,7 @@ let pp_relop ff = function
   | Ne -> Format.fprintf ff "<>"
   | Eq -> Format.fprintf ff "="
 
-let pp_assign ff (v, e) = Format.fprintf ff "%c = %a" v pp_expression e
+let pp_assign ff (v, e) = Format.fprintf ff "%s = %a" v pp_expression e
 let sep_soft_comma out () = Format.fprintf out ",@ "
 
 let rec pp_instruction ff = function
@@ -115,7 +115,7 @@ let rec pp_instruction ff = function
         l
   | SplitAssign (vl, el) ->
       Format.fprintf ff "@[<hov>%a@] %a @[<hov>%a@]"
-        Format.(pp_print_list ~pp_sep:sep_soft_comma pp_print_char)
+        Format.(pp_print_list ~pp_sep:sep_soft_comma pp_print_string)
         vl pp_relop Eq
         Format.(pp_print_list ~pp_sep:sep_soft_comma pp_expression)
         el
@@ -126,7 +126,7 @@ let rec pp_instruction ff = function
   | Vavers e -> Format.fprintf ff "VAVERS %a" pp_expression e
   | Entree l ->
       Format.fprintf ff "ENTREE @[<hov>%a@]"
-        Format.(pp_print_list ~pp_sep:sep_soft_comma pp_print_char)
+        Format.(pp_print_list ~pp_sep:sep_soft_comma pp_print_string)
         l
   | Sousroutine e -> Format.fprintf ff "SOUSROUTINE %a" pp_expression e
   | Retourne -> Format.fprintf ff "RETOURNE"
@@ -148,7 +148,7 @@ let pp_program ff p = pp_titled_list "Program" ff p pp_line
 
 module Debug = struct
   let pp_assign_debug ff (v, e) =
-    Format.fprintf ff "ASSIGN: %c = %a" v pp_expression e
+    Format.fprintf ff "ASSIGN: %s = %a" v pp_expression e
 
   let rec pp_instruction_debug ff = function
     | Imprime el ->
@@ -161,7 +161,7 @@ module Debug = struct
           l
     | SplitAssign (vl, el) ->
         Format.fprintf ff "SPLIT ASSIGN: @[<hov>%a@] %a @[<hov>%a@]"
-          Format.(pp_print_list ~pp_sep:sep_soft_comma pp_print_char)
+          Format.(pp_print_list ~pp_sep:sep_soft_comma pp_print_string)
           vl pp_relop Eq
           Format.(pp_print_list ~pp_sep:sep_soft_comma pp_expression)
           el
@@ -172,7 +172,7 @@ module Debug = struct
     | Vavers e -> Format.fprintf ff "VAVERS %a" pp_expression e
     | Entree l ->
         Format.fprintf ff "ENTREE @[<hov>%a@]"
-          Format.(pp_print_list ~pp_sep:sep_soft_comma pp_print_char)
+          Format.(pp_print_list ~pp_sep:sep_soft_comma pp_print_string)
           l
     | Sousroutine e -> Format.fprintf ff "SOUSROUTINE %a" pp_expression e
     | Retourne -> Format.fprintf ff "RETOURNE"
