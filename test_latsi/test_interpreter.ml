@@ -182,8 +182,8 @@ let test_arithmetic_operations =
 
 let test_remarks =
   [
-    test_eval "REM \"Hello, World\"" "0 REM \"Hello, World\"\n"
-      empty_constraints;
+    test_eval "REM \"Hello, World\"" "0 REM \"Hello, World\"\n 1 X = 1\n"
+      [ ('X', 1) ];
   ]
 
 let test_line_order =
@@ -411,7 +411,12 @@ let test_programs =
 let () =
   run "Interpreter"
     [
-      ("Empty program", [ test_empty_program "" ]);
+      ( "Empty program",
+        [
+          test_empty_program "";
+          test_empty_program "0 REM \"y\"\n";
+          test_empty_program "0 REM \"y\"\n 1 REM \"n\"\n";
+        ] );
       ("Variable assignment", test_var_assignment);
       ("Addition", test_addition);
       ("Substraction", test_substraction);

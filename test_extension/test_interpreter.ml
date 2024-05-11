@@ -28,7 +28,7 @@ let test_exception_program ?(input = Implementation.Ints []) name program exn =
           ()))
 
 let test_empty_program program =
-  test_exception_program "Empty_program" program Empty_program
+  test_exception_program (program ^ " is empty") program Empty_program
 
 let test_eval_fail ?(input = Implementation.Ints []) name program =
   let result = eval_env_str ~input program in
@@ -221,7 +221,7 @@ let test_arithmetic_operations =
   ]
 
 let test_remarks =
-  [ test_eval "REM \"Hello, World\"" "0 REM \"Hello, World\"\n" [] ]
+  [ test_eval "REM \"Hello, World\"" "0 REM \"Hello, World\"\n 0 X = 1 \n" [] ]
 
 let test_line_order =
   [
@@ -517,7 +517,12 @@ let test_programs =
 let () =
   run "Interpreter"
     [
-      ("Empty program", [ test_empty_program "" ]);
+      ( "Empty program",
+        [
+          test_empty_program "";
+          test_empty_program "0 REM \"y\"\n";
+          test_empty_program "0 REM \"y\"\n 1 REM \"n\"\n";
+        ] );
       ("Variable assignment", test_var_assignment);
       ("Variable multi assignment", test_var_multi_assignment);
       ("Variable split assignment", test_var_split_assignment);
