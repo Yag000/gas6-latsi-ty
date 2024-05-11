@@ -3,7 +3,7 @@ open Parser
 let token_to_string = function
   | Nat n -> "Nat " ^ string_of_int n
   | String s -> "String " ^ s
-  | Var c -> "Var " ^ String.make 1 c
+  | Var v -> "Var " ^ v
   | Langle -> "Langle"
   | Rangle -> "Rangle"
   | LangleEqual -> "LangleEqual"

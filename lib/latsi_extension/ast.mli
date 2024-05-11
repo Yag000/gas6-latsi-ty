@@ -1,6 +1,6 @@
 exception ParserError
 
-type variable = char
+type variable = string
 type unop = Pos | Neg
 type binop = Add | Sub | Mul | Div
 
