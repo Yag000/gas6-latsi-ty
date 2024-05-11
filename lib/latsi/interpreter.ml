@@ -96,45 +96,49 @@ module Implementation = struct
             | End -> ()))
 
   let eval_env ?(input = Stdin) program =
-    match program with
+    (* Check for empty program. Programs with only REM instructions are not allowed *)
+    (match
+       List.filter
+         (function { instr = Rem _; _ } -> false | _ -> true)
+         program
+     with
     | [] -> raise Empty_program
-    | _ ->
-        (* Initialize the environment with 26 variables A-Z *)
-        let env = Hashtbl.create 26 in
-        List.init 26 (fun i -> char_of_int (i + int_of_char 'A'))
-        |> List.iter (fun v -> Hashtbl.add env v 0);
+    | _ -> ());
 
-        (* Remove duplicates *)
-        let program_hashtable = Hashtbl.create (List.length program) in
-        List.iter
-          (fun { number; instr } ->
-            Hashtbl.replace program_hashtable number instr)
-          program;
+    (* Initialize the environment with 26 variables A-Z *)
+    let env = Hashtbl.create 26 in
+    List.init 26 (fun i -> char_of_int (i + int_of_char 'A'))
+    |> List.iter (fun v -> Hashtbl.add env v 0);
 
-        (* Sort the program by line number *)
-        let program =
-          Hashtbl.to_seq program_hashtable
-          |> List.of_seq
-          |> List.sort (fun (number1, _) (number2, _) ->
-                 compare number1 number2)
-        in
+    (* Remove duplicates *)
+    let program_hashtable = Hashtbl.create (List.length program) in
+    List.iter
+      (fun { number; instr } -> Hashtbl.replace program_hashtable number instr)
+      program;
 
-        (* Setup the program hash table, which allows us to always have the
-           next instruction and make jumps easier *)
-        let program_intrs = Hashtbl.create (List.length program) in
+    (* Sort the program by line number *)
+    let program =
+      Hashtbl.to_seq program_hashtable
+      |> List.of_seq
+      |> List.sort (fun (number1, _) (number2, _) -> compare number1 number2)
+    in
 
-        let start =
-          program |> List.rev
-          |> List.fold_left
-               (fun acc (number, instr) ->
-                 Hashtbl.add program_intrs number (instr, acc);
-                 Some number)
-               None
-        in
+    (* Setup the program hash table, which allows us to always have the
+       next instruction and make jumps easier *)
+    let program_intrs = Hashtbl.create (List.length program) in
 
-        (* Evaluate the program *)
-        eval_program env start program_intrs input;
-        env
+    let start =
+      program |> List.rev
+      |> List.fold_left
+           (fun acc (number, instr) ->
+             Hashtbl.add program_intrs number (instr, acc);
+             Some number)
+           None
+    in
+
+    (* Evaluate the program *)
+    eval_program env start program_intrs input;
+    env
 
   let value_of var env = Hashtbl.find env var
   let is_correct_value var value env = Hashtbl.find env var = value
