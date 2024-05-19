@@ -4,19 +4,33 @@
 
 Ce projet a été réalisé par IGLESIAS VAZQUEZ Yago et SOAN Tony Ly dans le cadre du projet de "Grammaires et analyse syntaxique" lors du S6 de la L3 Informatique à l'Université Paris Cité.
 
-## Comment lancer notre projet ?
+## Dépendances
 
-### Dépendances
+Les dépendances principales sont `opam`, `dune`, `ocaml`, et `menhir`.
 
-Veuillez installer les dépendances nécessaires pour lancer le projet.
+Notre projet n'a pas besoin de dépendances particulières en plus pour fonctionner, vous pouvez créer un simple `switch opam` local avec la commande suivante:
 
-Pour les installer, vous aurez d'abord besoin d'`opam` et `dune`.
+```shell
+opam switch create . --deps-only
+```
+
 Avant de poursuivre, veuillez avoir activé votre environnement `opam` souhaité dans votre shell.
-Ensuite exécutez la commande suivante pour créer un `switch opam` local à la racine du projet:
+
+**Cependant des dépendances en plus sont nécessaires pour tester le projet:**
+
+- Si vous avez déjà crée le `switch opam` local, veuillez installer les nouvelles dépandances avec la commande suivante:
+
+```shell
+opam install . --deps-only
+```
+
+- Sinon, exécutez la commande suivante pour créer un `switch opam` local à la racine du projet avec les dépendances nécessaires:
 
 ```shell
 opam switch create . --deps-only --with-test
 ```
+
+## Comment lancer notre projet ?
 
 ### Compiler
 
