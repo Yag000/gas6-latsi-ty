@@ -25,7 +25,7 @@ eval $(opam env)
 - Si vous avez déjà crée le `switch opam` local, veuillez installer les nouvelles dépandances avec la commande suivante:
 
 ```shell
-opam install . --deps-only
+opam install . --deps-only --with-test
 ```
 
 - Sinon, exécutez la commande suivante pour créer un `switch opam` local à la racine du projet avec les dépendances nécessaires:
