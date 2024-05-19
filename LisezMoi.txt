@@ -66,7 +66,7 @@ dune exec latsi_extension <votre fichier LATSI>
 
 #### Note
 
-Veuillez veillez à ce que le contenu de `<votre fichier LATSI>` finisse avec une nouvelle ligne vide.
+Veuillez veillez à ce que le contenu de `<votre fichier LATSI>` finisse avec une nouvelle ligne vide, pour bien respecter la syntaxe LATSI.
 
 ### Tester
 
