@@ -47,12 +47,12 @@ dune exec latsi latsi_programs/<votre fichier LATSI>.latsi
 - Notre implémentation avec extensions :
 
 ```shell
-dune exec latsi_extension latsi_programs/<votre fichier LATSI>.latsi
+dune exec latsi_extension latsi_programs/<votre fichier LATSI>
 ```
 
 #### Note
 
-Veuillez veillez à ce que votre fichier `.latsi` finisse avec une nouvelle ligne vide.
+Veuillez veillez à ce que le contenu de `<votre fichier LATSI>` finisse avec une nouvelle ligne vide.
 
 ### Tester
 
