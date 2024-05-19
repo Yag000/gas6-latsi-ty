@@ -153,6 +153,8 @@ test_extension               <== Tests avec extensions
 
 ## Répartition du travail
 
+(`etf` désigne `expression`, `term` et `facteur` des définitions de la syntaxte LATSI.)
+
 - IGLESIAS VAZQUEZ Yago:
 
   - Parser etf
