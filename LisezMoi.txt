@@ -14,7 +14,11 @@ Notre projet n'a pas besoin de dépendances particulières en plus pour fonction
 opam switch create . --deps-only
 ```
 
-Avant de poursuivre, veuillez avoir activé votre environnement `opam` souhaité dans votre shell.
+Avant de poursuivre, veuillez avoir activé votre environnement `opam` souhaité dans votre shell:
+
+```shell
+eval $(opam env)
+````
 
 **Cependant des dépendances en plus sont nécessaires pour tester le projet:**
 
