@@ -55,13 +55,13 @@ Pour exécuter nos implémentations depuis la racine du projet, vous pouvez lanc
 - Notre implémentation classique :
 
 ```shell
-dune exec latsi latsi_programs/<votre fichier LATSI>.latsi
+dune exec latsi <votre fichier LATSI>
 ```
 
 - Notre implémentation avec extensions :
 
 ```shell
-dune exec latsi_extension latsi_programs/<votre fichier LATSI>
+dune exec latsi_extension <votre fichier LATSI>
 ```
 
 #### Note
