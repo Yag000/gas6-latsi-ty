@@ -121,7 +121,7 @@ lib
     └── token.mli
 test_latsi                   <== Tests version classique
 ├── dune
-├── expect-tests             <== Test des outputs des programmes LATSI
+├── expect-tests             <== Tests des outputs des programmes LATSI
 │   ├── dune
 │   ├── test_imprime.ml
 │   ├── test_nl.ml
@@ -133,7 +133,7 @@ test_latsi                   <== Tests version classique
 └── utils.ml
 test_extension               <== Tests avec extensions
 ├── dune
-├── expect-tests             <== Test des outputs des programmes LATSI
+├── expect-tests             <== Tests des outputs des programmes LATSI
 │   ├── dune
 │   ├── test_imprime.ml
 │   ├── test_nl.ml
