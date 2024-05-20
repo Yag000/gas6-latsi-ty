@@ -1,0 +1,14 @@
+0 C = 1
+1 SOUSROUTINE 5
+2 X = C
+3 FIN
+4 O = 1
+5 Y = C
+6 C = C + 1
+7 SOUSROUTINE 11
+8 Z = C
+9 C = C + 1
+10 RETOURNE
+11 P = C
+12 C = C + 1
+13 RETOURNE

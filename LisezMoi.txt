@@ -1,0 +1,190 @@
+# [GAS6] Projet LATSI 2023-2024
+
+## Auteurs
+
+Ce projet a été réalisé par IGLESIAS VAZQUEZ Yago et SOAN Tony Ly dans le cadre du projet de "Grammaires et analyse syntaxique" lors du S6 de la L3 Informatique à l'Université Paris Cité.
+
+## Dépendances
+
+Les dépendances principales sont `opam`, `dune`, `ocaml`, et `menhir`.
+
+Notre projet n'a pas besoin de dépendances particulières en plus pour fonctionner, vous pouvez créer un simple `switch opam` local avec la commande suivante:
+
+```shell
+opam switch create . --deps-only
+```
+
+Avant de poursuivre, veuillez avoir activé votre environnement `opam` souhaité dans votre shell:
+
+```shell
+eval $(opam env)
+````
+
+**Cependant des dépendances en plus sont nécessaires pour tester le projet:**
+
+- Si vous avez déjà crée le `switch opam` local, veuillez installer les nouvelles dépandances avec la commande suivante:
+
+```shell
+opam install . --deps-only --with-test
+```
+
+- Sinon, exécutez la commande suivante pour créer un `switch opam` local à la racine du projet avec les dépendances nécessaires:
+
+```shell
+opam switch create . --deps-only --with-test
+```
+
+## Comment lancer notre projet ?
+
+### Compiler
+
+Pour compiler le programme entrez la commande ci-dessous depuis la racine du projet.
+
+```shell
+dune build
+```
+
+#### Note
+
+Parfois, avant de compiler et/ou tester, vous aurez d'abord besoin de supprimer le dossier `_build` avec la commande
+
+```shell
+dune clean
+```
+
+### Exécuter
+
+Pour exécuter nos implémentations depuis la racine du projet, vous pouvez lancer soit:
+
+- Notre implémentation classique :
+
+```shell
+dune exec latsi <votre fichier LATSI>
+```
+
+- Notre implémentation avec extensions :
+
+```shell
+dune exec latsi_extension <votre fichier LATSI>
+```
+
+#### Note
+
+Veuillez veillez à ce que le contenu de `<votre fichier LATSI>` finisse avec une nouvelle ligne vide, pour bien respecter la syntaxe LATSI.
+
+### Tester
+
+Nous avons fait en sorte de tester notre projet rigoureusement avec des tests unitaires et des tests de propriétés avec les librairies `alcotest`, `qcheck` et `ppx_expect`.
+
+Pour lancer les tests de nos implémentations depuis la racine du projet, vous pouvez lancer :
+
+- Les tests unitaires de notre implémentation classique :
+
+```shell
+dune runtest test_latsi
+```
+
+- Les tests unitaires de notre implémentation avec extensions :
+
+```shell
+dune runtest test_extension
+```
+
+- Tous les tests unitaires:
+
+```shell
+dune runtest
+```
+
+## Organisation des dossiers et fichiers
+
+```shell
+$ tree lib test_latsi test_extension
+lib
+├── latsi                    <== Implémentation classique
+│   ├── ast.ml               <== Arbre de syntaxe abstrait
+│   ├── ast.mli
+│   ├── dune
+│   ├── interpreter.ml
+│   ├── interpreter.mli
+│   ├── lexer.mli
+│   ├── lexer.mll
+│   ├── parser.mly
+│   ├── token.ml
+│   └── token.mli
+└── latsi_extension          <== Implémentation avec extensions
+    ├── ast.ml
+    ├── ast.mli
+    ├── dune
+    ├── interpreter.ml
+    ├── interpreter.mli
+    ├── lexer.mli
+    ├── lexer.mll
+    ├── parser.mly
+    ├── token.ml
+    └── token.mli
+test_latsi                   <== Tests version classique
+├── dune
+├── expect-tests             <== Tests des outputs des programmes LATSI
+│   ├── dune
+│   ├── test_imprime.ml
+│   ├── test_nl.ml
+│   ├── test_program.ml
+│   └── utils.ml
+├── test_interpreter.ml
+├── test_lexer.ml
+├── test_parser.ml
+└── utils.ml
+test_extension               <== Tests avec extensions
+├── dune
+├── expect-tests             <== Tests des outputs des programmes LATSI
+│   ├── dune
+│   ├── test_imprime.ml
+│   ├── test_nl.ml
+│   ├── test_program.ml
+│   └── utils.ml
+├── test_interpreter.ml
+├── test_lexer.ml
+├── test_parser.ml
+└── utils.ml
+
+7 directories, 40 files
+```
+
+## Répartition du travail
+
+- IGLESIAS VAZQUEZ Yago:
+
+  - Parser
+    - Mise en place initiale du parser et des règles (`input`, `program`, `line`, `instr`, `expression`, `var`)
+    - Mise en place initiale de l'Arbre Syntaxique Abstrait
+    - Premiers tests unitaires et de propriétés du parser
+  - Eval
+    - Mise en place initiale de l'interpréteur pour l'évaluation
+    - Mise en place des instructions (`assign` et `rem`)
+    - Tests unitaires et de propriétés d'évaluation
+  - Gestion des numéros de lignes
+  - Instructions:
+    - ASSIGN
+    - VAVERS
+    - ENTREE
+    - FIN
+    - REM
+  - Extensions
+    - VRAIES VARIABLES
+    - SOUSROUTINE
+
+- SOAN Tony Ly:
+
+  - Lexer
+    - Mise en place du lexer et des premiers tokens, et expressions rationnelles
+    - Premiers tests unitaires et de propriétés des tokens et du lexer
+  - Instructions:
+    - IMPRIME
+    - SI ALORS
+    - NL
+  - Extensions:
+    - MULTIASSIGN (Assignements du style : x = 1, y = x, ...)
+    - SPLITASSIGN (Assignements du style : x, y, ... = y, 1 , ...)
+
+Les instructions et les extensions on été rigoureusement testés aussi.
