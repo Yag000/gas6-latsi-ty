@@ -153,12 +153,16 @@ test_extension               <== Tests avec extensions
 
 ## Répartition du travail
 
-(`etf` désigne `expression`, `term` et `facteur` des définitions de la syntaxte LATSI.)
-
 - IGLESIAS VAZQUEZ Yago:
 
-  - Parser etf
-  - Eval etf
+  - Parser
+    - Mise en place initiale du parser et des règles (`input`, `program`, `line`, `instr`, `expression`, `var`)
+    - Mise en place initiale de l'Arbre Syntaxique Abstrait
+    - Premiers tests unitaires et de propriétés du parser
+  - Eval
+    - Mise en place initiale de l'interpréteur pour l'évaluation
+    - Mise en place des instructions (`assign` et `rem`)
+    - Tests unitaires et de propriétés d'évaluation
   - Gestion des numéros de lignes
   - Instructions:
     - ASSIGN
@@ -172,11 +176,15 @@ test_extension               <== Tests avec extensions
 
 - SOAN Tony Ly:
 
-  - Lexer etf
+  - Lexer
+    - Mise en place du lexer et des premiers tokens, et expressions rationnelles
+    - Premiers tests unitaires et de propriétés des tokens et du lexer
   - Instructions:
     - IMPRIME
     - SI ALORS
     - NL
   - Extensions:
-    - MULTIASSIGN
-    - SPLITASSIGN
+    - MULTIASSIGN (Assignements du style : x = 1, y = x, ...)
+    - SPLITASSIGN (Assignements du style : x, y, ... = y, 1 , ...)
+
+Les instructions et les extensions on été rigoureusement testés aussi.
