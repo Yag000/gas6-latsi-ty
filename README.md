@@ -1,39 +1,112 @@
-# GA6-LATSI-TY
+# [GAS6] LATSI Project 2023-2024
 
-## How to run the code
+## Authors
 
-The code depends on `menhir`, `ocamllex` and `dune`, in particular it uses the version `2.1`. You can install yourself the dependencies
-on your global switch or create a local switch and install the dependencies:
+This project was developed by Yago Iglesias Vazquez and Tony Ly Soan as part of the "Grammars and Syntax Analysis" course during the sixth semester of the Bachelor's in Computer Science at Université Paris Cité.
 
-```bash
+## Dependencies
+
+The main dependencies are `opam`, `dune`, `ocaml`, and `menhir`.
+
+To set up the necessary environment, you can create a local `opam` switch with the following command:
+
+```shell
 opam switch create . --deps-only
 ```
 
-Then you can build the project with the following command:
+Before proceeding, ensure your desired `opam` environment is active in your shell:
 
-```bash
-dune build bin/main.ml
+```shell
+eval $(opam env)
 ```
 
-and run the code with the following command:
+**Additional dependencies are required for testing the project:**
 
-```bash
-./_build/default/bin/main.exe <filename>
+- If you have already created the local `opam` switch, install the new dependencies with:
+
+```shell
+opam install . --deps-only --with-test
 ```
 
-Where `<filename>` is the name of the file you wish to execute.
+- Otherwise, create a local `opam` switch at the project root with the necessary dependencies:
 
-## Tests
-
-The code has been thoroughly tested using `alcotest`, `qcheck` and `ppx_expect`. If you wish to run the tests, you will need to install them.
-The easiest way to do this is to create a local switch and install the dependencies:
-
-```bash
-opam switch create . --deps-only --with-test  
+```shell
+opam switch create . --deps-only --with-test
 ```
 
-Then you can run the tests with the following command:
+## How to Run the Project
 
-```bash
+### Compilation
+
+To compile the program, run the following command from the project root:
+
+```shell
+dune build
+```
+
+#### Note
+
+Sometimes, before compiling and/or testing, you might need to remove the `_build` directory with:
+
+```shell
+dune clean
+```
+
+### Execution
+
+To execute our implementations from the project root, you can use either:
+
+- Our standard implementation:
+
+```shell
+dune exec latsi <your LATSI file>
+```
+
+- Our implementation with extensions:
+
+```shell
+dune exec latsi_extension <your LATSI file>
+```
+
+#### Note
+
+Ensure the content of `<your LATSI file>` ends with an empty newline to adhere to LATSI syntax.
+
+### Testing
+
+We have rigorously tested our project with unit tests and property tests using the libraries `alcotest`, `qcheck`, and `ppx_expect`.
+
+To run the tests for our implementations from the project root, use:
+
+- Unit tests for our standard implementation:
+
+```shell
+dune runtest test_latsi
+```
+
+- Unit tests for our implementation with extensions:
+
+```shell
+dune runtest test_extension
+```
+
+- All unit tests:
+
+```shell
 dune runtest
 ```
+
+## Directory and File Organization
+
+```shell
+-lib
+ ├── latsi                    <== Standard implementation
+ └── latsi_extension          <== Implementation with extensions
+
+-test_latsi                   <== Tests for standard version
+ └── expect-tests             <== Output tests for LATSI programs
+
+─test_extension               <== Tests for extended version
+ └── expect-tests             <== Output tests for LATSI programs
+```
+
